@@ -1,24 +1,23 @@
 package worm;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
-public class Autoupdater extends JFrame{
-	private static final long serialVersionUID = 1L;
+public class Autoupdater extends JFrame implements Serializable{
+	private static final long serialVersionUID = 2L;
 	private JLabel label = new JLabel("Updating...");
 	private JProgressBar progress = new JProgressBar(0,1000);
 	public static Autoupdater update(){
@@ -33,7 +32,7 @@ public class Autoupdater extends JFrame{
 		return null;
 	}
 	private static boolean checkForUpdates() throws IOException{
-		BufferedReader br = new BufferedReader(new FileReader(new File(Constants.src)));
+		BufferedReader br = new BufferedReader(new InputStreamReader(new URL(Constants.src).openStream()));
 		while(true){
 			String line = br.readLine();
 			if(line == null)
@@ -61,53 +60,72 @@ public class Autoupdater extends JFrame{
 		setVisible(true);
 		try {
 			File dir = new File(System.getProperty("user.dir") + File.separator + "Worms.jar");
+			label.setText("Downloading...");
 			File dest = download(dir.length());
 			label.setText("Refreshing file...");
 			dir.delete();
 			dir.createNewFile();
-			FileReader fr = new FileReader(dest);
-			FileWriter fw = new FileWriter(dir);
+			FileInputStream is = new FileInputStream(dest);
+			FileOutputStream os = new FileOutputStream(dir);
 			label.setText("Transferring file...");
+			System.out.println("Transferring to: " + dir);
+			int checksum = 0;
 			while(true){
-				int i = fr.read();
+				int i = is.read();
 				if(i == -1)
 					break;
-				fw.write(i);
+				checksum += i;
+				os.write(i);
 				progress.setValue((int)((double)dir.length()/(double)dest.length() * 1000));
 			}
-			fr.close();
-			fw.close();
+			System.out.println("Checksum: " + checksum);
+			is.close();
+			os.close();
 			dest.delete();
-			System.out.println("Harro!");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		downloading = false;
 	}
+	
+	static String hexSet = "0123456789ABCDEF";
+	
+	private String toHex(int i) {
+		StringBuffer buf = new StringBuffer();
+		for(int x = 0; x < 2; x++){
+			byte hexVal = (byte) (i % 16);
+			i /= 16;
+			buf.append(hexSet.charAt((int)hexVal));
+		}
+		return buf.toString();
+	}
+	
 	public boolean downloading(){
 		return downloading;
 	}
 	private File download(long len) throws Exception{
 		File dest = getRoot();
-		//URL url = new URL(Constants.update);
-		//BufferedReader br = new BufferedReader(new InputStreamReader(url.openConnection().getInputStream()));
-		BufferedReader br = new BufferedReader(new FileReader(new File(Constants.update)));
+		System.out.println("Downloading to: " + dest);
+		BufferedInputStream is = new BufferedInputStream(new URL(Constants.update).openStream());
 		try{
 			dest.createNewFile();
 		} catch (IOException ex){
 			System.out.println("File " + dest.toString() + " could not be created. Cancelling download");
 			return null;
 		}
-		BufferedWriter bw = new BufferedWriter(new FileWriter(dest));
+		BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(dest));
+		long count = 0;
 		while(true){
-			String line = br.readLine();
-			if(line == null)
+			int i = is.read();
+			if(i == -1)
 				break;
-			bw.write(line);
+			count+=i;
+			os.write(i);
 			progress.setValue((int)((double)dest.length()/(double)len * 1000));
 		}
-		br.close();
-		bw.close();
+		System.out.println("Checksum: " + count);
+		is.close();
+		os.close();
 		System.out.println("Update downloaded");
 		return dest;
 	}
