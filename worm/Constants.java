@@ -3,7 +3,7 @@ package worm;
 import java.io.File;
 
 public class Constants {
-	public static String base = System.getProperty("user.home") + File.separator + "Worm";
+	public static String base = System.getProperty("user.dir");
 	public static String hs = base + "scores.txt";
 	public static String settings = base + "settings.txt";
 	public static String trunk = "http://chaos-somanayr.googlecode.com/svn/trunk/worm/";

@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 import javax.swing.JButton;
@@ -36,14 +38,14 @@ public class WormMain{
 	static WormCanvas wc;
 	static Color[] colors = {Color.GREEN, Color.GRAY, Color.BLACK};
 	public static void main(String[] args){
-		checkFile();
 		Autoupdater update = Autoupdater.update();
 		if(update != null){
 			while(update.downloading()){};
 			update.setVisible(false);
 			try {
-				Runtime.getRuntime().exec("java -jar " + System.getProperty("user.dir") + File.separator +"Worms.jar");
-				System.exit(0);
+				System.out.println("Executing: " + "java -jar " + System.getProperty("user.dir") + File.separator + "worm.jar");
+				Runtime.getRuntime().exec("java -jar " + System.getProperty("user.dir") + File.separator + "worm.jar");
+				return;
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -80,16 +82,6 @@ public class WormMain{
 		f.pack();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame = f;
-	}
-	private static void checkFile() {
-		File f = new File(Constants.base);
-		if(!f.exists()){
-			JFileChooser fc = new JFileChooser();
-			fc.setVisible(true);
-			while(fc.getSelectedFile() == null);
-			fc.setVisible(false);
-			Constants.base = fc.getSelectedFile().toString().substring(0, fc.getSelectedFile().toString().lastIndexOf(File.separator));
-		}
 	}
 }
 
@@ -294,7 +286,6 @@ class Options extends JFrame{
 		contain.setPreferredSize(new Dimension(gc.getPreferredSize().width, 55));
 		add(submit, BorderLayout.SOUTH);
 		pack();
-		//TODO: set visible
 	}
 	public void submit(){
 		int fruitmin = Integer.parseInt(min.getText());

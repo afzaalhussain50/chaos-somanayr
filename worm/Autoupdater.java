@@ -17,7 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
 public class Autoupdater extends JFrame implements Serializable{
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 1L;
 	private JLabel label = new JLabel("Updating...");
 	private JProgressBar progress = new JProgressBar(0,1000);
 	public static Autoupdater update(){
