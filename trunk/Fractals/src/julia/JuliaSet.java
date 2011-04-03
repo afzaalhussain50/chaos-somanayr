@@ -1,4 +1,4 @@
-package julia;
+package Fractals.src.julia;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -51,6 +51,10 @@ public class JuliaSet extends Fractal{
 		this.mag = mag;
 		this.translation = translation;*/
 		log("Initializing with c value " + c.toString());
+		colorSet = new Color[256];
+		for (int i = 0; i < colorSet.length; i++) {
+			colorSet[i] = new Color((int) (Math.random() * Integer.MAX_VALUE));
+		}
 	}
 
 	@Override
@@ -60,24 +64,24 @@ public class JuliaSet extends Fractal{
 
 	@Override
 	protected void drawFractal(Graphics g) {
-		for(int x = 0; x < dim.width; x++){
-			for(int y = 0; y < dim.height; y++){
-				Complex cur = new Complex((double)x / dim.width, (double)y / dim.height);
+		for(int y = 0; y < dim.height; y++){
+			for(int x = 0; x < dim.width; x++){
+				Complex cur = new Complex( 4 * (double)x / dim.width - 2, 4 * (double)y / dim.height - 2);
 				//log("--------(" + x + ", " + y + ")--------");
 				int i;
-				for(i = 0; (/*x - */cur.getReal()) * (/*x - */cur.getReal()) + (/*y - */cur.getImaginary()) * (/*y - */cur.getImaginary()) < 4; i++){
+				for(i = 0; (cur.getReal()) * (cur.getReal()) + (cur.getImaginary()) * (cur.getImaginary()) < 4; i++){
 					Complex next = cur.square().add(c);
 					if(Double.isInfinite(next.getReal()) || Double.isInfinite(next.getImaginary()) || Double.isNaN(next.getReal()) || Double.isNaN(next.getImaginary()))
 						break;
 					cur = next;
 					if(verbose)
 						log(cur.toString());
-					if(i > 100)
+					if(i >= colorSet.length)
 						break;
 				}
 				//log("Iterations: " + i);
 				g.setColor(colorSet[i % colorSet.length]);
-				if(i > 100)
+				if(i >= colorSet.length)
 					g.setColor(new Color(153, 102, 204));
 				g.drawLine(x, y, x, y);
 			}
