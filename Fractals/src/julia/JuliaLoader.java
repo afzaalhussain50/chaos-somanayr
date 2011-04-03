@@ -1,4 +1,4 @@
-package julia;
+package Fractals.src.julia;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -23,12 +23,14 @@ public class JuliaLoader extends JFrame implements ActionListener{
 
 	JPanel imagePane = new JPanel();
 
-	JTextField cR = new JTextField(3);
-	JTextField cI = new JTextField(3);
+	JTextField cR = new JTextField(10);
+	JTextField cI = new JTextField(10);
 
 	JTextField save = new JTextField(30);
 
 	JButton build = new JButton("Start rendering");
+	
+	JButton clear = new JButton("Clear");
 
 	JCheckBox saveFractal = new JCheckBox("Save fractal?");
 
@@ -41,6 +43,7 @@ public class JuliaLoader extends JFrame implements ActionListener{
 		numberPane.add(new JLabel(" + "));
 		numberPane.add(cI);
 		numberPane.add(new JLabel("i"));
+		numberPane.add(clear);
 		JPanel savePane = new JPanel(new FlowLayout());
 		savePane.add(saveFractal);
 		savePane.add(new JLabel("Save to: "));
@@ -55,23 +58,33 @@ public class JuliaLoader extends JFrame implements ActionListener{
 		build.addActionListener(this);
 		saveFractal.addActionListener(new ActionListener() {
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				save.setEnabled(saveFractal.isSelected());
+			}
+		});
+		clear.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cR.setText("0.0");
+				cI.setText("0.0");
 			}
 		});
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		pack();
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		double r = Double.parseDouble(cR.getText());
 		double i = Double.parseDouble(cI.getText());
-		JuliaSet js = new JuliaSet(new Complex(r, i), saveFractal.isSelected() ? new Dimension(1000, 1000) : imagePane.getSize());
+		JuliaSet js = new JuliaSet(new Complex(r, i), saveFractal.isSelected() ? new Dimension(2000, 2000) : imagePane.getSize());
 		if(!saveFractal.isSelected())
 			js.render(imagePane.getGraphics());
 		else
 			try {
-				BufferedImage img = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
+				BufferedImage img = new BufferedImage(2000, 2000, BufferedImage.TYPE_INT_RGB);
 				File f =  new File(save.getText());
 				f.getParentFile().mkdirs();
 				f.createNewFile();

@@ -1,4 +1,4 @@
-package julia;
+package Fractals.src.julia;
 
 /**
  * Defines a complex number. This class is immutable.
