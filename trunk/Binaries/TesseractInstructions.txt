@@ -1,0 +1,9 @@
+There are 2 cameras, the 3d and 4d camera.
+
+To move the 3d camera x and y, hold 'a'
+
+To move the 4d camera x and y, hold 's'
+
+To move the 3d and 4d camera z, hold 'd' (change in x changes the z value of the 4d camera)
+
+To move the 4d camera w, scroll. Scrolling away increased w
