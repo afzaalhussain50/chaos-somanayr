@@ -20,6 +20,8 @@
  * 	type - 				The type of relationship between data1 and data2, parallel to data1 and data2
  */
 
+"use strict";
+
 function Circos(datasource){
 	if ( !(this instanceof Circos) )
       return new Circos();
@@ -34,8 +36,12 @@ function Circos(datasource){
 	 * Call this method ONLY! This method will handle everything you need.
 	 */
 	this.render = function(ctx, center, dist){
-		
+		ctx.save();
 		if(dist){
+			this.ds.scale = dist / this.ds.distance;
+			var innerFontSize = Math.round(this.ds.innerFontSize * this.ds.scale);
+			console.log(innerFontSize);
+			this.ds.font = "".concat(innerFontSize).concat("pt ").concat(this.ds.innerFontType);
 			this.ds.dist = dist;
 		}
 		
@@ -50,19 +56,23 @@ function Circos(datasource){
 		
 		/* inner arcs */
 		var t = 0.0;
+		var max = 0;
 		for(var i = 0; i < this.ds.sweeps.length; i++){
-			drawArc(ctx, center, this.ds.dist, t, this.ds.sweeps[i], this.ds.labels[i], this.ds.innerArcThickness);
+			max = Math.max(max, drawArc(ctx, center, this.ds.dist, t, this.ds.sweeps[i], this.ds.scale * this.ds.innerArcThickness, this.ds.labels[i], this.ds.scale * this.ds.innerTextOffset, this.ds.font));
 			t += this.ds.sweeps[i] + this.ds.gap;
 		}
 		
-		// if(true)
-			// return;
-		// /* outer arcs */
-		// t = 0.0;
-		// for(var i = 0; i < this.ds.groupNames.length; i++){
-			// drawArc(ctx, center, this.ds.innerTextWidth, t, this.ds.groupSweep[i], this.ds.groupNames[i], this.ds.outerArcThickness);
-			// t += this.ds.roupSweep[i] + gap;
-		// }
+		this.ds.innerStringMax = max;
+		
+		/* outer arcs */
+		max = 0;
+		t = 0.0;
+		for(var i = 0; i < this.ds.groupNames.length; i++){
+			max = Math.max(max, drawArc(ctx, center, max + this.ds.outerArcOffset, t, this.ds.groupSweep[i], this.ds.scale * this.ds.outerArcThickness, this.ds.groupNames[i], this.ds.scale * this.ds.outerTextOffset, this.ds.font));
+			t += this.ds.groupSweep[i] + this.ds.gap;
+		}
+		
+		this.ds.outerStringMax = max;
 	}
 	
 	this.drawRelationships = function(ctx, center) {
@@ -108,6 +118,22 @@ function Circos(datasource){
 			ctx.fill();
 			//ctx.stroke();
 		}
+	}
+	
+	this.handleMouseDown = function(ctx, location){
+		
+	}
+	
+	this.handleMouseDrag = function(ctx, deltaX, deltaY){
+		
+	}
+	
+	this.handleMouseClick = function(ctx, location){
+		
+	}
+	
+	this.handleMouseWheel = function(ctx, wheelDelta){
+		
 	}
 }
 
@@ -182,7 +208,7 @@ function pointAt(center, l, theta){
 	};
 }
 
-function drawArc(ctx, center, l, theta, sweep, label, thickness){
+function drawArc(ctx, center, l, theta, sweep, thickness, label, textOff, font){
 
 	ctx.save();
 	
@@ -193,6 +219,7 @@ function drawArc(ctx, center, l, theta, sweep, label, thickness){
 	ctx.fillStyle = "yellow";
 	
 	ctx.beginPath();
+	console.log("Center: ".concat(center.x).concat(", ").concat(center.y).concat("; radius: ").concat(l).concat("; theta start: ").concat(theta).concat("; theta sweep: ").concat(sweep).concat("; thickness: ").concat(thickness).concat("; label: ").concat(label).concat("; text offset: ").concat(textOff).concat("; font: ").concat(font));
 	ctx.arc(center.x, center.y, l + thickness, theta, theta + sweep, false);
 	ctx.arc(center.x, center.y, l, theta + sweep, theta, true)
 	ctx.closePath();
@@ -201,15 +228,20 @@ function drawArc(ctx, center, l, theta, sweep, label, thickness){
 	
 	ctx.restore();
 	
-	//TODO: draw label!!!
+	return drawText(ctx, center, l + textOff, theta + sweep / 2, label, font);
 }
 
-function sleep(millis)
- {
-  var date = new Date();
-  var curDate = null;
-  do { curDate = new Date(); }
-  while(curDate-date < millis);
+function drawText(ctx, center, off, theta, value, font){
+	ctx.save();
+	ctx.font = font;
+	ctx.fillStyle = "#000000";
+	ctx.translate(center.x, center.y);
+	var flip = (theta < 3 * Math.PI / 2 && theta > Math.PI / 2);
+	var x = ctx.measureText(value).width + off;
+	ctx.rotate(flip ? theta + Math.PI : theta);
+	ctx.fillText(value, flip ? -x : off, 0);
+	ctx.restore();
+	return x;
 }
 
 function arc(ctx, center, l, thetaStart, thetaEnd, counterClockwise){
