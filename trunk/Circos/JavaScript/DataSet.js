@@ -4,6 +4,9 @@
  * It stores certain data pieces and has default settings which kick in when not pre-defind by the
  * user.
  */
+
+"use strict";
+
 function DataSet(datasource){	
 	if ( !(this instanceof DataSet) )
       return new DataSet();
@@ -15,6 +18,8 @@ function DataSet(datasource){
 	this.innerTextOffset;
 	this.outerArcOffset;
 	this.outerArcThickness;
+	this.innerFontType;
+	this.innerFontSize;
 	
 	/* Optional paremters */
 	this.groupNames;
@@ -25,7 +30,7 @@ function DataSet(datasource){
 	this.splineOutline;
 	this.sweeps;
 	this.labels;
-	this.dist;
+	this.distance;
 	this.data1;
 	this.data2;
 	this.type;
@@ -34,21 +39,39 @@ function DataSet(datasource){
 	this.relSweep;
 	this.gap;
 	this.groupSweep;
+	this.dist;
+	this.font;
+	this.scale;
+	
+	/* Cached by client */
+	this.innerStringMax;
+	this.outerStringMax;
 	
 	/* Functions */
 	this.organizeData
+	this.prepareData;
 	
 	
 	/* DEFINE */
 	
 	/* Define possible undefined settings, set those that aren't there to defaults */
+	if(!datasource.innerFontType){
+		this.innerFontType = "Times";
+	} else {
+		this.innerFontType = datasource.innerFontType;
+	}
+	if(!datasource.innerFontSize){
+		this.innerFontSize = 12;
+	} else {
+		this.innerFontSize = datasource.innerFontSize;
+	}
 	if(!datasource.innerArcThickness){
 		this.innerArcThickness = 10;
 	} else {
 		this.innerArcThickness = datasource.innerArcThickness;
 	}
 	if(!datasource.innerTextOffset){
-		this.innerTextOffset = 5;
+		this.innerTextOffset = 25;
 	} else {
 		this.innerTextOffset = datasource.innerTextOffset;
 	}
@@ -72,17 +95,17 @@ function DataSet(datasource){
 	if(datasource.groupNames){
 		this.groupNames = datasource.groupNames;
 	} else {
-		this.groupNames = null;
+		this.groupNames = new Array();
 	}
 	if(datasource.groupEnd){
 		this.groupEnd = datasource.groupEnd;
-		if(!this.groupNames){
+		if(this.groupNames.length == 0){
 			throw "Cannot define group endpoints if group names is not defined";
 		} else if (this.groupNames.length != this.groupEnd.length){
 			throw "Cannot define group endpoints if group names are not parallel";
 		}
 	} else {
-		this.groupEnd = null;
+		this.groupEnd = new Array();
 	}
 	
 	/* Copy data that should be there, check that it really is */
@@ -107,7 +130,7 @@ function DataSet(datasource){
 		throw "Labels are undefined";
 	}
 	if(datasource.dist){
-		this.dist = datasource.dist;
+		this.distance = datasource.dist;
 	} else {
 		throw "Inner distance is undefined";
 	}
@@ -256,6 +279,12 @@ function DataSet(datasource){
 			}
 			this.groupSweep[i] = t - this.gap; //problematic if group size is 0, which is why that's not allowed
 		}
+		
+		this.dist = this.distance; //store a cache so that we can play with this.dist
+		
+		this.font = "".concat(this.innerFontSize).concat("pt ").concat(this.innerFontType);
+		
+		this.scale = 1.0;
 	}
 	
 	this.calcGap = function(){

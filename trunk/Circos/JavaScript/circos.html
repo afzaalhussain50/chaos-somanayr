@@ -5,12 +5,10 @@
 		<script type="text/javascript" src="DataSet.js"></script>
 	</head>
 	<body>
-		<p>
-			Hi there!
-		</p>
 		<canvas id="circosPlot" width=500 height=500 />
 			<script type="text/javascript">
-			
+				"use strict";
+				
 				/* set up plot */
 				var canvas = document.getElementById("circosPlot");
 				var canvasContext = canvas.getContext("2d");
@@ -23,7 +21,7 @@
 					splineOutline: "black",
 					sweeps: [0.78539816339744830961566084581988, 1.0471975511965977461542144610932, 1.5, 1.5],
 					labels: ["test0", "test1", "test2", "test3"],
-					dist: 100,
+					dist: 300,
 					data1: [2.0, 1.0, 2.0, 3.0],
 					data2: [1.0, 0.0, 0.0, 1.0],
 					type : [1.0, 2.0, 3.0, 4.0]
