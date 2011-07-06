@@ -20,6 +20,7 @@ function DataSet(datasource){
 	this.outerArcThickness;
 	this.innerFontType;
 	this.innerFontSize;
+	this.rotation;
 	
 	/* Optional paremters */
 	this.groupNames;
@@ -44,8 +45,10 @@ function DataSet(datasource){
 	this.scale;
 	
 	/* Cached by client */
-	this.innerStringMax;
-	this.outerStringMax;
+	this.innerStringMax;	//max size of inner string
+	this.outerStringMax;	//max size of outer string
+	this.center; 			//canvas center
+	this.dim; 				//canvas dimensions
 	
 	/* Functions */
 	this.organizeData
@@ -89,6 +92,11 @@ function DataSet(datasource){
 		this.outerTextOffset = 5;
 	} else {
 		this.outerTextOffset = datasource.outerTextOffset;
+	}
+	if(!datasource.rotation){
+		this.rotation = 0;
+	} else {
+		this.rotation = datasource.rotation;
 	}
 	
 	/* this isn't a setting, but it doesn't have to be defined */
