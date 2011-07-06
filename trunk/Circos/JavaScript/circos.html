@@ -15,40 +15,39 @@
 				var ds = {
 					innerArcThickness: 5.0,
 					innerTextOffset: 5,
-					groupNames: ["Group A", "Group B"],
-					groupEnd: [1, 3],
+					groupNames: ["Group A", "Group B", "Group C"],
+					groupEnd: [1, 3, 5],
 					colorScheme: ["blue", "rgba(100%, 25%, 100%, .5)", "rgba(100%, 0, 0, .5)", "rgba(100%, 100%, 0%, .5)", "rgba(100%, 0%, 100%, .5)"],
 					splineOutline: "black",
-					sweeps: [0.78539816339744830961566084581988, 1.0471975511965977461542144610932, 1.5, 1.5],
-					labels: ["test0", "test1", "test2", "test3"],
-					dist: 300,
-					data1: [2.0, 1.0, 2.0, 3.0],
-					data2: [1.0, 0.0, 0.0, 1.0],
-					type : [1.0, 2.0, 3.0, 4.0]
+					sweeps: [0.78539816339744830961566084581988, 1.0471975511965977461542144610932, .75, .75, .75, .75],
+					labels: ["test0", "test1", "test2", "test3", "empty1", "empty2"],
+					dist: 100,
+					data1: [2, 1, 2, 3, 1],
+					data2: [1, 0, 0, 1, 4],
+					type : [1, 2, 3, 4, 0]
 				};
 				var circos = new Circos(ds);
 				circos.render(canvasContext, {
-					x: 300,
-					y: 100
-				});
+					x: canvas.clientWidth / 2,
+					y: canvas.clientHeight / 2
+				}, canvas.clientWidth, canvas.clientHeight);
 				function setUpFF(){
 					
 					/* set up mouse events for FF. Please switch away from IE */
 					var mouseIsDown = false;
-					var center = {x:250,y:250};
 					var lastPosition = null;
 					function mouseMoved(evt){
+						var position = {x:evt.clientX - canvas.offsetLeft, y:evt.clientY - canvas.offsetTop};
 						if(mouseIsDown){
-							var position = {x:evt.clientX, y:evt.clientY};
 							if(lastPosition == null){ //this should never happen
 								lastPosition = position;
 							}
 							var x = lastPosition.x - position.x;
 							var y = lastPosition.y - position.y;
 							lastPosition = position;
-							center.x -= x;
-							center.y -= y;
-							circos.render(canvasContext, center);
+							circos.handleMouseDrag(canvasContext, position, x, y);
+						} else {
+							circos.handleMouseOver(canvasContext, position);
 						}
 					}
 					
@@ -57,13 +56,14 @@
 					}
 					
 					function mouseDown(evt){
-						lastPosition = {x:evt.clientX, y:evt.clientY};
+						lastPosition = {x:evt.clientX - canvas.offsetLeft, y:evt.clientY - canvas.offsetTop};
 						mouseIsDown = true;
+						circos.handleMouseDown(canvasContext, lastPosition);
 					}
 					
 					function mouseScroll(evt){
-						ds.dist -= evt.detail ? evt.detail : evt.wheelData;
-						circos.render(canvasContext, center, ds.dist);
+						wheelDelta = evt.detail ? evt.detail : evt.wheelData;
+						circos.handleMouseWheel(canvasContext, wheelDelta);
 					}
 					
 					/* assign events */
@@ -85,6 +85,7 @@
 					return true;
 				}
 				
+				//TODO: later
 				function setUpMobileSafari(){
 					var center = {x:250, y:250};
 					var oldTouches;
