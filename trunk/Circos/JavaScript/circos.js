@@ -24,7 +24,7 @@
 
 function Circos(datasource){
 	if ( !(this instanceof Circos) )
-      return new Circos();
+		return new Circos();
 
 	/**
 	 * DO NOT MODIFY ds!!!!
