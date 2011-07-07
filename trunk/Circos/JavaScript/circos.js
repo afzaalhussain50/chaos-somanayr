@@ -25,6 +25,8 @@
 function Circos(datasource){
 	if ( !(this instanceof Circos) )
 		return new Circos();
+		
+	this.callbacks = new Array();
 
 	/**
 	 * DO NOT MODIFY ds!!!!
@@ -32,9 +34,7 @@ function Circos(datasource){
 	 */
 	this.ds = new DataSet(datasource);
 	
-	/**
-	 * Call this method ONLY! This method will handle everything you need.
-	 */
+	
 	this.render = function(ctx, center, canvasW, canvasH, dist){
 		ctx.save();
 		if(dist){
@@ -66,8 +66,8 @@ function Circos(datasource){
 		var t = this.ds.rotation;
 		var max = 0;
 		for(var i = 0; i < this.ds.sweeps.length; i++){
-			max = Math.max(max, drawArc(ctx, center, this.ds.dist, t, this.ds.sweeps[i], this.ds.scale * this.ds.innerArcThickness, this.ds.labels[i], this.ds.scale * this.ds.innerTextOffset, this.ds.font));
-			t += (this.ds.sweeps[i] + this.ds.gap) % (Math.PI * 2);
+			max = Math.max(max, drawArc(ctx, center, this.ds.dist, t, this.ds.getSweep(i), this.ds.scale * this.ds.innerArcThickness, this.ds.labels[i], this.ds.scale * this.ds.innerTextOffset, this.ds.font));
+			t = (t + this.ds.getSweep(i) + this.ds.gap) % (Math.PI * 2);
 		}
 		
 		this.ds.innerStringMax = max;
@@ -77,7 +77,7 @@ function Circos(datasource){
 		t = this.ds.rotation;
 		for(var i = 0; i < this.ds.groupNames.length; i++){
 			max = Math.max(max, drawArc(ctx, center, this.ds.innerStringMax + this.ds.outerArcOffset, t, this.ds.groupSweep[i], this.ds.scale * this.ds.outerArcThickness, this.ds.groupNames[i], this.ds.scale * this.ds.outerTextOffset, this.ds.font));
-			t += (this.ds.groupSweep[i] + this.ds.gap) % (Math.PI * 2);
+			t = (t + this.ds.groupSweep[i] + this.ds.gap) % (Math.PI * 2);
 		}
 		
 		this.ds.outerStringMax = max;
@@ -95,11 +95,11 @@ function Circos(datasource){
 			
 			var s1 = 0;
 			for (var j = 0; j < d1; j++) {
-				s1 += this.ds.sweeps[j];
+				s1 += this.ds.getSweep(j);
 			}
 			var s2 = 0;
 			for (var j = 0; j < d2; j++) {
-				s2 += this.ds.sweeps[j];
+				s2 += this.ds.getSweep(j);
 			}
 			var theta1 = s1 + offsets[d1] * this.ds.relSweep[d1] + this.ds.gap * d1 + this.ds.rotation;
 			var theta2 = s2 + offsets[d2] * this.ds.relSweep[d2] + this.ds.gap * d2 + this.ds.rotation;
@@ -145,8 +145,8 @@ function Circos(datasource){
 		//var angle = this.getAngle(location);
 		//t = this.ds.rotation;
 		//for(var i = 0; i < this.ds.sweeps.length; i++){
-		//	console.log("angle: ".concat(angle).concat("; t: ").concat(t).concat("; sweep: ").concat(this.ds.sweeps[i]));
-		//	t = (t + this.ds.sweeps[i] + this.ds.gap) % (Math.PI * 2);
+		//	console.log("angle: ".concat(angle).concat("; t: ").concat(t).concat("; sweep: ").concat(this.ds.getSweep(i)));
+		//	t = (t + this.ds.getSweep(i) + this.ds.gap) % (Math.PI * 2);
 		//}
 	}
 	
@@ -204,11 +204,11 @@ function Circos(datasource){
 			
 			var s1 = 0;
 			for (var j = 0; j < d1; j++) {
-				s1 += this.ds.sweeps[j];
+				s1 += this.ds.getSweep(j);
 			}
 			var s2 = 0;
 			for (var j = 0; j < d2; j++) {
-				s2 += this.ds.sweeps[j];
+				s2 += this.ds.getSweep(j);
 			}
 			var theta1 = s1 + offsets[d1] * this.ds.relSweep[d1] + this.ds.gap * d1 + this.ds.rotation;
 			var theta2 = s2 + offsets[d2] * this.ds.relSweep[d2] + this.ds.gap * d2 + this.ds.rotation;
@@ -239,10 +239,10 @@ function Circos(datasource){
 			var theta = this.ds.rotation;
 			var max = 0;
 			for(var j = 0; j < i; j++){
-				theta = (theta + this.ds.sweeps[j] + this.ds.gap) % (Math.PI * 2);
+				theta = (theta + this.ds.getSweep(j) + this.ds.gap) % (Math.PI * 2);
 			}
 			
-			var sweep = this.ds.sweeps[i];
+			var sweep = this.ds.getSweep(i);
 			
 			ctx.save();
 	
@@ -281,7 +281,7 @@ function Circos(datasource){
 			
 			ctx.beginPath();
 			ctx.arc(this.ds.center.x, this.ds.center.y, this.ds.outerStringMax, theta, theta + sweep, false);
-			ctx.arc(this.ds.center.x, this.ds.center.y, this.ds.innerStringMax + this.ds.scale * this.ds.outerArcOffset, theta + sweep, theta, true)
+			ctx.arc(this.ds.center.x, this.ds.center.y, this.ds.innerStringMax + this.ds.outerArcOffset, theta + sweep, theta, true)
 			ctx.closePath();
 			ctx.fill();
 			ctx.stroke();
@@ -403,7 +403,7 @@ function Circos(datasource){
 			t = this.ds.rotation;
 			for(var i = 0; i < this.ds.sweeps.length; i++){
 				var startAngle = t;
-				var endAngle = t + this.ds.sweeps[i];
+				var endAngle = t + this.ds.getSweep(i);
 				if(endAngle >= 2 * Math.PI && angle < startAngle){
 					startAngle = 0;
 					endAngle -= 2 * Math.PI;
@@ -414,7 +414,7 @@ function Circos(datasource){
 						index: i
 					};
 				}
-				t = (t + this.ds.sweeps[i] + this.ds.gap) % (Math.PI * 2);
+				t = (t + this.ds.getSweep(i) + this.ds.gap) % (Math.PI * 2);
 			}
 			return {
 				area: 1,
@@ -435,11 +435,11 @@ function Circos(datasource){
 				var d1 = this.ds.data1[i];
 				var d2 = this.ds.data2[i];
 				for (var j = 0; j < d1; j++) {
-					s1 += this.ds.sweeps[j];
+					s1 += this.ds.getSweep(j);
 				}
 				var s2 = 0;
 				for (var j = 0; j < d2; j++) {
-					s2 += this.ds.sweeps[j];
+					s2 += this.ds.getSweep(j);
 				}
 				var theta1 = s1 + offsets[d1] * this.ds.relSweep[d1] + this.ds.gap * d1 + this.ds.rotation;
 				var theta2 = s2 + offsets[d2] * this.ds.relSweep[d2] + this.ds.gap * d2 + this.ds.rotation;

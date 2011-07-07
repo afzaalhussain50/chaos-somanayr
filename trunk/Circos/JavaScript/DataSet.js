@@ -21,6 +21,7 @@ function DataSet(datasource){
 	this.innerFontType;
 	this.innerFontSize;
 	this.rotation;
+	this.thin;
 	
 	/* Optional paremters */
 	this.groupNames;
@@ -51,8 +52,9 @@ function DataSet(datasource){
 	this.dim; 				//canvas dimensions
 	
 	/* Functions */
-	this.organizeData
+	this.organizeData;
 	this.prepareData;
+	this.getSweep;
 	
 	
 	/* DEFINE */
@@ -158,13 +160,19 @@ function DataSet(datasource){
 		throw "Relationship type array is undefined";
 	}
 	
+	this.getSweep = function(i){
+		if(this.thin)
+			return 1 / this.dist;
+		else
+			return this.sweeps[i];
+	}
 	
 	/* VALIDATE */
 	
 	/* Validate arcs */
 	var sum = 0;
 	for (var i = 0; i < this.sweeps.length; i++) {
-		sum += this.sweeps[i];
+		sum += this.getSweep(i);
 	}
 	if(sum > Math.PI * 2){
 		throw "sweeps sum to " + sum + ", which is greater than 2 * pi";
@@ -273,7 +281,7 @@ function DataSet(datasource){
 
 		this.relSweep = new Array(); //relative sweep of each curve in each node
 		for (var i = 0; i < relCount.length; i++) {
-			this.relSweep[i] = this.sweeps[i] / relCount[i];
+			this.relSweep[i] = this.getSweep(i) / relCount[i];
 		}
 
 		this.gap = this.calcGap(); //cache gap for CPU efficiency
@@ -298,7 +306,7 @@ function DataSet(datasource){
 	this.calcGap = function(){
 		var sum = 0.0;
 		for(var i = 0; i < this.sweeps.length; i++){
-			sum += this.sweeps[i];
+			sum += this.getSweep(i);
 		}
 		return (Math.PI * 2 - sum) / this.sweeps.length;
 			
