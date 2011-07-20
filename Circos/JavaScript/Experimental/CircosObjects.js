@@ -1,3 +1,10 @@
+/**
+ * Contains objects for defining
+ *
+ * Super arc is not rendered, but instead the arc
+ * that holds all other arcs. Generally, it should be an arc ranging from 0 to 2 * Math.PI. It should hold at least 1 child node.
+ */
+
 "use strict";
 
 function SelfContainedCircosPlot(superArc, connections, w, h){
@@ -7,18 +14,6 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 	this.lowerGap = 5;
 	var plot = new CircosPlot(superArc, connections, this.center, this.renderingRules);
 	this.render = function(ctx){
-		/*var size = 0;
-		var stack = new Array();
-		for (var i=0; i < superArc.children.length; i++) {
-			stack[i] = superArc.children[i];
-		}
-		while(stack.length > 0){
-			var arc = stack.pop();
-			size = Math.max(size, ctx.measureText(arc.label).width);
-			for (var i=0; i < arc.children.length; i++) {
-				stack.push(arc.children[i]);
-			}
-		}*/
 		var matrix = new Array();
 		matrix.push(superArc.children);
 		var b = true;
@@ -28,21 +23,18 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 			for (var i=0; i < matrix[matrix.length - 1].length; i++) {
 				var children = matrix[matrix.length - 1][i].children;
 				for (var j=0; j < children.length; j++) {
+					b = true;
 					ar.push(children[j]);
 				}
 			}
-			matrix.push(ar);
+			if(ar.length > 0)
+				matrix.push(ar);
 		}
-		console.log(matrix);
 		var dist = connections[0].dist;
 		for(var i = matrix.length - 1; i >= 0; i--){
 			var maxSize = 0;
-			console.log(matrix[i]);
-			console.log(matrix.length);
-			console.log(i);
 			for (var j=0; j < matrix[i].length; j++) {
 				maxSize = Math.max(maxSize, ctx.measureText(matrix[i][j].label).width);
-				console.log(ctx.measureText(matrix[i][j].label).width);
 			}
 			maxSize += 20;
 			var start = dist;
@@ -76,9 +68,7 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 	}
 }
 
-/**
- * Super arc is not rendered
- */
+
 function CircosPlot(superArc, connections, center, renderingRules){
 	this.setRotation = function(rotation){
 		renderingRules.rotation = rotation;
@@ -170,10 +160,25 @@ function CircosPlot(superArc, connections, center, renderingRules){
 			y = h/2;
 		}
 		var arc = plot.getSubArc(startAngle, endAngle);
+		var stack = new Array();
+		stack.push(arc);
+		var maxDepth = arc.dist;
+		while(stack.length > 0){
+			var thisArc = stack.pop();
+			maxDepth = Math.min(maxDepth, thisArc.dist);
+			for (var i=0; i < thisArc.children.length; i++) {
+				stack.push(thisArc.children[i]);
+			}
+		}
+		console.log(maxDepth);
 		var scale = Math.min(w/2,h/2) / (arc.dist + arc.thickness + ((ctx) ? ctx.measureText(arc.label).width + 10 : 0));
 		var rules = new RenderingRules(renderingRules);
 		rules.scale = scale;
-		var cons = plot.getSubArcConnections(startAngle, endAngle)
+		var cons = plot.getSubArcConnections(startAngle, endAngle);
+		for (var i=0; i < cons.length; i++) {
+			console.log("".concat(cons[i].dist).concat("->").concat(maxDepth));
+			cons[i].dist = maxDepth;
+		}
 		var p = new Plot(arc, cons);
 		p.render(ctx, {x:x,y:y}, rules);
 		ctx.restore();
@@ -256,7 +261,22 @@ function Plot(superArc, connections){
 		var scale = (2 * Math.PI - .1) / sum;
 		var newSuperArc = subArc(superArc, startAngles, endAngles, scale);
 		
+		var stack = new Array();
+		stack.push(newSuperArc);
+		var maxDepth = newSuperArc.dist;
+		while(stack.length > 0){
+			var thisArc = stack.pop();
+			maxDepth = Math.min(maxDepth, thisArc.dist);
+			for (var i=0; i < thisArc.children.length; i++) {
+				stack.push(thisArc.children[i]);
+			}
+		}
+		
 		var newCurves = subConnections(connections, startAngles, endAngles, scale);
+		
+		for (var i=0; i < newCurves.length; i++) {
+			newCurves[i].dist = maxDepth;
+		}
 		
 		return new Plot(newSuperArc, newCurves);
 	}
