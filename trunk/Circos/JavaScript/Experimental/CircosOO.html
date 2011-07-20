@@ -2,7 +2,7 @@
 	<head>
 		<title>	Circos Plots</title>
 		<script type="text/javascript" src="Components.js"></script>
-		<script type="text/javascript" src="CircosOO.js"></script>
+		<script type="text/javascript" src="CircosObjects.js"></script>
 	</head>
 	<body>
 		<canvas id="circosPlot1" width=500 height=500>
@@ -32,7 +32,7 @@
 					var subChild = new Arc(i, i + sweep, c.dist - 10, c.dist - 5, "".concat(counter++));
 					i += sweep + .1;
 					if(Math.random() > .75 && canHaveChildren){
-						subChild.children = generateChildren(subChild, false);
+						subChild.children = generateChildren(subChild, true);
 					}
 					children.push(subChild);
 				}
@@ -101,8 +101,6 @@
 				sccp.render(canvasContext);
 			}
 			
-			
-			
 			function drawSubPlot(start, end){
 				var ctx2 = document.getElementById("circosPlot2").getContext("2d");
 				var canvasW = 500;
@@ -113,7 +111,6 @@
 				p.createSubPlot(ctx2, [start],[end], 500, 500);
 				ctx2.restore();
 			}
-			
 		</script>
 	</body>
 </html>
