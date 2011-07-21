@@ -19,12 +19,12 @@
 /**
  * This object represents an arc.
  * Properties:
- * Children: An array of the child nodes
- * Start: The start angle, in radiians
- * End: The end angle, in radians
- * Dist: The distance from the center
- * Thickness: The thickness of the Arc
- * Label: The text label that represents the arc. "" for no label.
+ * children: An array of the child nodes. Must be defined by user modification.
+ * start: The start angle, in radiians
+ * end: The end angle, in radians
+ * dist: The distance from the center
+ * thickness: The thickness of the Arc
+ * label: The text label that represents the arc. "" for no label.
  * 
  * 
  * render():void

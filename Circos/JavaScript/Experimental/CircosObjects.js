@@ -1,17 +1,88 @@
 /**
  * Contains objects for defining
  *
- * Super arc is not rendered, but instead the arc
- * that holds all other arcs. Generally, it should be an arc ranging from 0 to 2 * Math.PI. It should hold at least 1 child node.
+ * superArc is not rendered, but instead the Arc
+ * that holds all other Arcs. Generally, it should
+ * be an arc ranging from 0 to 2 * Math.PI. It
+ * should hold at least 1 child node.
+ * 
+ * connections is an array of Curves. Curves
+ * should lie within superArc, though this is not
+ * stricly controlled
+ * 
+ * In documentation, ctx is assumed to be the
+ * canvas's context object, obtained by
+ * 
+ * document.getElementByID(canvasID)
+ * 		.getContext("2d")
+ * 
+ * center is assumed to be the translation of the
+ * grid relative to the real origin. To better
+ * understand this, read about polar grids in
+ * Components.js. Center defines the caretesian
+ * center of the polar grid.
+ * 
+ * renderingRules is assumed to be the ruleset
+ * used for rendering. Although it does not need
+ * to be an instance of RenderingRules, it is
+ * highly suggested that an instance of
+ * RenderingRules is passed, as RenderingRules
+ * contains default values that will make your
+ * life easier.
+ * 
+ * superArc and connections are assumed to be as defined above.
+ * 
+ * 
+ * 
+ * All angles are in radiians!
  */
 
 "use strict";
 
+/**
+ * This Circos plot object is the easiest to use. It requires 4 parameters.
+ * 
+ * @param w The width of the canvas.
+ * @param h The height of the canvas.
+ * 
+ * Properties:
+ * center: See center in the heading documentation. {x:w/2, y:h/2}
+ * renderingRules: See renderingRules in the heading documentation. Default RenderingRules. See RenderingRules.
+ * 
+ * 
+ * render():void
+ * 
+ * Renders the plot with the given canvas context.
+ * 
+ * rotate():void
+ * 
+ * Rotates the plot
+ * 
+ * @param theta The angle of rotation.
+ * 
+ * setScale():void
+ * 
+ * Sets the scale, ignoring any previous values.
+ * this.renderingRules.scale = scale;
+ * 
+ * @param scale The new scale.
+ * 
+ * 
+ * scalePercent():void
+ * 
+ * Multiplicitavely  modifies the scale
+ * this.renderingRules.scale *= percent;
+ * 
+ * @param percent The percent by which to modify the scale. 100% should be fed as 1.0.
+ * 
+ * 
+ * getPlot():CircosPlot
+ * 
+ * Returns the CircosPlot object that represents this Circos plot.
+ */
 function SelfContainedCircosPlot(superArc, connections, w, h){
 	this.center = {x:w/2,y:h/2};
 	this.renderingRules = new RenderingRules({});
-	this.upperGap = 5;
-	this.lowerGap = 5;
 	var plot = new CircosPlot(superArc, connections, this.center, this.renderingRules);
 	this.render = function(ctx){
 		var matrix = new Array();
@@ -54,11 +125,6 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 		this.renderingRules.scale = scale;
 	}
 	
-	/**
-	 * Multiplicative scale
-	 *
-	 * percent should be reduced. For 1.0, do not feed in 100%.
-	 */
 	this.scalePercent = function(percent){
 		this.renderingRules.scale *= percent;
 	}
@@ -68,13 +134,94 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 	}
 }
 
-
+/**
+ * This plot object is easier to use than plot,
+ * but still more complex than SelfContainedCircosPlot
+ * 
+ * setRotataion():void
+ * 
+ * Changes the rotation ignoring any previous rotation
+ * 
+ * @param rotation The new angle of rotation
+ * 
+ * 
+ * rotate():void
+ * 
+ * Changes the rotation by adding the given angle
+ * to the previous rotation
+ * 
+ * @param theta The angle to add
+ * 
+ * 
+ * pan():void
+ * 
+ * Shifts the center of the plot by (deltaX, deltaY)
+ * 
+ * @param deltaX the change in the x coordinate
+ * @param deltaY the change in the y coordinate
+ * 
+ * 
+ * setCenter():void
+ * 
+ * Shifts the center to the given point
+ * 
+ * @param moveTo a point {x,y} that is the new center
+ * 
+ * 
+ * getPlot():Plot
+ * 
+ * Returns the plot object representing this CircosPlot
+ * 
+ * 
+ * render():void
+ * 
+ * Draws this CircosPlot
+ * 
+ * @param ctx see main description
+ * 
+ * 
+ * findHitByEvent():Arc
+ * 
+ * Finds the arc that collides with this event
+ * 
+ * @param evt the event that happened
+ * @param ctx used for text size computation
+ * 
+ * 
+ * finHitByLocation():Arc
+ * 
+ * Finds the arc that collides with this position
+ * 
+ * @param x the canvas x location
+ * @param y the canvas y location
+ * 
+ * 
+ * zoomInOnSection():void
+ * 
+ * Creates a zoomed in picture of this section, ignoring all other parts
+ * 
+ * @param ctx
+ * @param startAngle the starting (smallest) angle of the section
+ * @param endAngle the ending (largest) angle of the section
+ * @param w the canvas width
+ * @param h the canvas height
+ * 
+ * 
+ * createSubPlot:void()
+ * 
+ * Draws a sub plot from the given positions
+ * 
+ * @param start the array of start angles
+ * @param end the array of end angles
+ * @param w the width of the plot
+ * @param h the height of the plot
+ */
 function CircosPlot(superArc, connections, center, renderingRules){
 	this.setRotation = function(rotation){
 		renderingRules.rotation = rotation;
 	}
-	this.rotate = function(deltaTheta){
-		renderingRules.rotation += deltaTheta;
+	this.rotate = function(theta){
+		renderingRules.rotation += theta;
 		renderingRules.rotation = renderingRules.rotation % (Math.PI * 2);
 	}
 	this.setScale = function(scale){
@@ -176,7 +323,6 @@ function CircosPlot(superArc, connections, center, renderingRules){
 		rules.scale = scale;
 		var cons = plot.getSubArcConnections(startAngle, endAngle);
 		for (var i=0; i < cons.length; i++) {
-			console.log("".concat(cons[i].dist).concat("->").concat(maxDepth));
 			cons[i].dist = maxDepth;
 		}
 		var p = new Plot(arc, cons);
@@ -207,9 +353,47 @@ function CircosPlot(superArc, connections, center, renderingRules){
 	}
 }
 
+/**
+ * The basic, least friendly representation of a Circos Plot.
+ * 
+ * render():void
+ * 
+ * Renders this plot
+ * 
+ * @param ctx
+ * @param center
+ * @param renderingRules
+ * 
+ * 
+ * getSubArc():Arc
+ * 
+ * Breaks down the superArc into an Arc within the specified parameters
+ * 
+ * @param start the start (smallest) angle
+ * @param end the end (largest) angle
+ * 
+ * 
+ * getSubArcConnections():Curve *
+ * 
+ * @param start see getSubArc()
+ * @param end see getSubArc()
+ * 
+ * 
+ * subPlot():Plot
+ * 
+ * Creates a sub-circos plot with the specified parameters.
+ * 
+ * @param startAngles the array of start (smaller) angles
+ * @param endAngles the array of end (larger) angles
+ * 
+ * startAngles and endAngles act as pairs of a start and end angles.
+ * startAngles[i] < endAngles[i]
+ * startAngles[i] < startAngles[i] + 1
+ * startAngles.length == endAngles.length
+ */
 function Plot(superArc, connections){
 	this.superArc = superArc;
-	this.connection = connections;
+	this.connections = connections;
 	this.render = function(ctx, center, renderingRules){
 		for (var i=0; i < superArc.children.length; i++) {
 			renderArc(ctx, superArc.children[i], center, renderingRules);
