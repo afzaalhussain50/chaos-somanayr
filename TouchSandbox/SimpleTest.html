@@ -1,0 +1,34 @@
+<html>
+	<head>
+		<script src="https://github.com/sidelab/interact/raw/master/interact.js"></script>
+	</head>
+	<body>
+		<canvas id="test" width="500" height="500"></canvas>
+		<script type="text/javascript">
+		    var demoCanvas = document.getElementById("test"),
+		        context = demoCanvas.getContext('2d'),
+		        eventMonitor = INTERACT.watch(demoCanvas);
+		    
+		    // handle pointer down events
+		    eventMonitor.bind('pointerDown', function(evt, absXY, relXY) {
+		        console.log('pointer down', 300);
+		        
+		        context.beginPath();
+		        context.moveTo(relXY.x, relXY.y);
+		    });
+		
+		    // handle pointer move events
+		    eventMonitor.bind('pointerMove', function(evt, absXY, relXY, deltaXY) {
+		        context.lineTo(relXY.x, relXY.y);
+		        context.stroke();
+		    
+		        console.log('delta = x: ' + deltaXY.x + ', y: ' + deltaXY.y + '');
+		    });
+		
+		    // handle pointer up events
+		    eventMonitor.bind('pointerUp', function(evt, absXY, relXY, deltaXY) {
+		        console.log('pointer up', 300);
+		    });
+		</script>
+	</body>
+</html>
