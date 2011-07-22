@@ -4,7 +4,7 @@
 	</head>
 	<body>
 		<canvas id="test" width="500" height="500" style="border:1px dotted;float:left"></canvas>
-		<script type="text/javascript">console.log("Script version .10")</script>
+		<script type="text/javascript">console.log("Script version .11")</script>
 		<script type="text/javascript">
 		var lastAngle = -1;
 		var angle = 0;
@@ -75,9 +75,9 @@
 				angle %= Math.PI * 2;
 				lastAngle = thisAngle;
 				context.save();
-				context.rotate(angle);
 				context.translate(250,250);
-				context.drawImage(img, 0, 0);
+				context.rotate(angle);
+				context.drawImage(img, -250, -250);
 				context.restore();
 			});
 			// handle pointer up events
