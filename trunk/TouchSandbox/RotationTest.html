@@ -4,7 +4,7 @@
 	</head>
 	<body>
 		<canvas id="test" width="500" height="500" style="border:1px dotted;float:left"></canvas>
-		<script type="text/javascript">console.log("Script version .13")</script>
+		<script type="text/javascript">console.log("Script version .14")</script>
 		<script type="text/javascript">
 		var lastAngle = -1;
 		var dist = -1;
@@ -75,12 +75,12 @@
 					return;
 				var thisAngle = getAngle(p1, p2);
 				angle += (thisAngle - lastAngle);
-				console.log('Angle: ' + angle + '; thisAngle: ' + thisAngle + '; lastAngle: ' + lastAngle);
 				angle %= Math.PI * 2;
 				lastAngle = thisAngle;
 				
 				var thisDist = distance(p1, p2);
 				var scale = thisDist / dist;
+				console.log(scale);
 				context.save();
 				context.scale(scale);
 				context.translate(250,250);
