@@ -19,6 +19,7 @@
 			eventMonitor.bind('pointerDownMulti', function(evt, absXY, relXY) {
 				var touchData = relXY;
 				while(touchData) {
+					console.log(rel.XY + 'down');
 					if(p1.id == -1) {
 						p1.id = relXY.id;
 						p1.x = relXY.x;
@@ -62,9 +63,11 @@
 			// handle pointer up events
 			eventMonitor.bind('pointerUpMulti', function(evt, absXY, relXY, deltaXY) {
 				if(relXY.id == p1.id) {
+					console.log("touch 1 up");
 					p1.id == -1;
 				}
 				if(relXY.id == p2.id) {
+					console.log("touch 2 up");
 					p2.id == -1;
 				}
 				console.log('touch ' + relXY.id + ' up');
