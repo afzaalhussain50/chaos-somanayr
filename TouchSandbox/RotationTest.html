@@ -42,9 +42,11 @@
 				while(touchData) {
 					var col = -1;
 					if(relXY.id == p1.id) {
+						console.log("touch1");
 						col = p1.col;
 					}
 					if(relXY.id == p2.id) {
+						console.log("touch2");
 						col = p2.col;
 					}
 					if(col != -1) {
@@ -65,7 +67,7 @@
 				if(relXY.id == p2.id) {
 					p2.id == -1;
 				}
-				demos.status('touch ' + relXY.id + ' up');
+				console.log('touch ' + relXY.id + ' up');
 			});
 </script>
 	</body>
