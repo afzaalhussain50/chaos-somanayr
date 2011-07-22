@@ -71,7 +71,7 @@
 				} // whiles
 				var thisAngle = getAngle(p1, p2);
 				angle += (thisAngle - lastAngle);
-				console.log('Angle' + angle);
+				console.log('Angle: ' + angle + '; thisAngle: ' + thisAngle + '; lastAngle: ' + lastAngle);
 				angle %= Math.PI * 2;
 				lastAngle = thisAngle;
 				context.save();
@@ -91,23 +91,23 @@
 			});
 			
 			function getAngle(center, location){
-	var x = location.x - center.x;
-	var y = location.y - center.y;
-	if(x == 0 && y > 0)
-		return Math.PI / 2;
-	if(x == 0 && y < 0)
-		return 3 * Math.PI / 2;
-	if(y == 0 && x > 0)
-		return 0;
-	if(y == 0 && x < 0)
-		return Math.PI;
-	var angle = Math.atan(y/x);
-	if(x > 0 && y > 0)
-		return angle;
-	if(x < 0)
-		return Math.PI + angle
-	return Math.PI * 2 + angle;
-}
+				var x = location.x - center.x;
+				var y = location.y - center.y;
+				if(x == 0 && y > 0)
+					return Math.PI / 2;
+				if(x == 0 && y < 0)
+					return 3 * Math.PI / 2;
+				if(y == 0 && x > 0)
+					return 0;
+				if(y == 0 && x < 0)
+					return Math.PI;
+				var angle = Math.atan(y/x);
+				if(x > 0 && y > 0)
+					return angle;
+				if(x < 0)
+					return Math.PI + angle
+				return Math.PI * 2 + angle;
+			}
 </script>
 	</body>
 </html>
