@@ -1,0 +1,74 @@
+<html>
+	<head>
+		<script src="https://github.com/sidelab/interact/raw/master/interact.js"></script>
+	</head>
+	<body>
+		<canvas id="test" width="500" height="500"></canvas>
+		<script type="text/javascript">
+		var demoCanvas = document.getElementById("test"), context = demoCanvas.getContext('2d'), eventMonitor = INTERACT.watch(demoCanvas, {
+				detailed : true
+			}), touchColors = {};
+
+			var p1 = {
+				col : "#00FF00"
+			}, p2 = {
+				col : "#0000FF"
+			};
+
+			// handle pointer down events
+			eventMonitor.bind('pointerDownMulti', function(evt, absXY, relXY) {
+				var touchData = relXY;
+				while(touchData) {
+					if(p1.id == -1) {
+						p1.id = relXY.id;
+						p1.x = relXY.x;
+						p1.y = relXY.y;
+					} else if(p2.id == -1) {
+						p2.id = relXY.id;
+						p2.x = relXY.x;
+						p2.y = relXY.y;
+					}
+					touchData = touchData.next;
+				} // while
+			});
+			// handle moves
+			eventMonitor.bind('pointerMoveMulti', function(evt, absXY, relXY) {
+				var touchData = relXY;
+
+				// clear the display
+				context.clearRect(0, 0, demoCanvas.width, demoCanvas.height);
+
+				// iterate through the touches and draw them
+				while(touchData) {
+					var col = -1;
+					if(relXY.id == p1.id) {
+						console.log("touch1");
+						col = p1.col;
+					}
+					if(relXY.id == p2.id) {
+						console.log("touch2");
+						col = p2.col;
+					}
+					if(col != -1) {
+						context.fillStyle = col;
+
+						context.beginPath();
+						context.arc(touchData.x, touchData.y, 20, 0, Math.PI * 2, false);
+						context.fill();
+					}
+					touchData = touchData.next;
+				} // whiles
+			});
+			// handle pointer up events
+			eventMonitor.bind('pointerUpMulti', function(evt, absXY, relXY, deltaXY) {
+				if(relXY.id == p1.id) {
+					p1.id == -1;
+				}
+				if(relXY.id == p2.id) {
+					p2.id == -1;
+				}
+				console.log('touch ' + relXY.id + ' up');
+			});
+</script>
+	</body>
+</html>
