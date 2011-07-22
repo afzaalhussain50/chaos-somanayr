@@ -48,12 +48,12 @@
 					if(relXY.id == p1.id) {
 						console.log("touch1");
 						col = p1.col;
-					}
-					if(relXY.id == p2.id) {
+					} else if(relXY.id == p2.id) {
 						console.log("touch2");
 						col = p2.col;
 					}
 					if(col != -1) {
+						console.log(col);
 						context.fillStyle = col;
 
 						context.beginPath();
