@@ -4,7 +4,7 @@
 	</head>
 	<body>
 		<canvas id="test" width="500" height="500" style="border:1px dotted;float:left"></canvas>
-		<script type="text/javascript">console.log("Script version .12")</script>
+		<script type="text/javascript">console.log("Script version .13")</script>
 		<script type="text/javascript">
 		var lastAngle = -1;
 		var dist = -1;
@@ -38,7 +38,7 @@
 					}
 					if(p2.id != -1 && p1.id != -1){
 						lastAngle = getAngle(p1, p2);
-						dist = dist(p1,p2);
+						dist = distance(p1,p2);
 					}
 					touchData = touchData.next;
 				} // while
@@ -79,7 +79,7 @@
 				angle %= Math.PI * 2;
 				lastAngle = thisAngle;
 				
-				var thisDist = dist(p1, p2);
+				var thisDist = distance(p1, p2);
 				var scale = thisDist / dist;
 				context.save();
 				context.scale(scale);
@@ -119,7 +119,7 @@
 				return Math.PI * 2 + angle;
 			}
 			
-			function dist(p1, p2){
+			function distance(p1, p2){
 				return Math.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
 			}
 </script>
