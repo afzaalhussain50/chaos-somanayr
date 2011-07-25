@@ -17,7 +17,7 @@
 			snd.play();
 		</script>
 		<script type="text/javascript">
-			console.log("version: .17");
+			console.log("version: .18");
 			var counter = 0;
 			function generateChildren(c, canHaveChildren){
 				var thickness = 5;
@@ -124,12 +124,22 @@
 			// handle pointer down events
 			eventMonitor.bind('pointerDownMulti', function(evt, absXY, relXY) {
 				var touchData = relXY;
+				var p1Valid = false, p2Valid = false;
+				while(touchData){
+					if(touchData.id == p1.id){
+						p1Valid = true;
+					} else if (touchData.id == p2.id){
+						p2Valid = true
+;					}
+					touchData = touchData.next;
+				}
+				touchData = relXY;
 				while(touchData) {
-					if(p1.id == -1) {
+					if(!p1valid) {
 						p1.id = relXY.id;
 						p1.x = relXY.x;
 						p1.y = relXY.y;
-					} else if(p2.id == -1) {
+					} else if(!p2valid) {
 						p2.id = relXY.id;
 						p2.x = relXY.x;
 						p2.y = relXY.y;
