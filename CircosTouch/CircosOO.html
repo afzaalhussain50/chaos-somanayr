@@ -17,6 +17,7 @@
 			snd.play();
 		</script>
 		<script type="text/javascript">
+			console.log("version: .01")
 			var counter = 0;
 			function generateChildren(c, canHaveChildren){
 				var thickness = 5;
@@ -106,6 +107,9 @@
 			/* 
 			 * Touch listeners
 			 */
+			var eventMonitor = INTERACT.watch(canvas, {
+				detailed : true
+			})
 		var lastAngle = -1;
 		var dist = -1;
 		var angle = 0;
