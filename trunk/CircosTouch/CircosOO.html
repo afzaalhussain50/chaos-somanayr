@@ -17,7 +17,7 @@
 			snd.play();
 		</script>
 		<script type="text/javascript">
-			console.log("version: .13");
+			console.log("version: .14");
 			var counter = 0;
 			function generateChildren(c, canHaveChildren){
 				var thickness = 5;
@@ -169,7 +169,7 @@
 					console.log(deltaX);
 					sccp.center.x += deltaX;
 					sccp.center.y += deltaY;
-					pos = touchData;
+					pos = relXY;
 					canvasContext.save();
 					canvasContext.clearRect(0,0,500,500);
 					sccp.render(canvasContext);
