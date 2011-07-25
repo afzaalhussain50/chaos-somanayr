@@ -17,7 +17,7 @@
 			snd.play();
 		</script>
 		<script type="text/javascript">
-			console.log("version: .16");
+			console.log("version: .17");
 			var counter = 0;
 			function generateChildren(c, canHaveChildren){
 				var thickness = 5;
@@ -136,7 +136,7 @@
 					}
 					if(p2.id != -1 && p1.id != -1){
 						lastAngle = getAngle(p1, p2);
-						dist = distance(p1,p2) * sccp.renderingRules.scale;
+						dist = distance(p1,p2) / sccp.renderingRules.scale;
 					}
 					if((p1.id == -1 || p2.id == -1) && (p1.id != -1 || p2.id != -1)){ //one touch
 						pos = touchData;
