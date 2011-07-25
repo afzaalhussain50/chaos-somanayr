@@ -17,7 +17,7 @@
 			snd.play();
 		</script>
 		<script type="text/javascript">
-			console.log("version: .18");
+			console.log("version: .19");
 			var counter = 0;
 			function generateChildren(c, canHaveChildren){
 				var thickness = 5;
@@ -135,11 +135,11 @@
 				}
 				touchData = relXY;
 				while(touchData) {
-					if(!p1valid) {
+					if(!p1Valid) {
 						p1.id = relXY.id;
 						p1.x = relXY.x;
 						p1.y = relXY.y;
-					} else if(!p2valid) {
+					} else if(!p2Valid) {
 						p2.id = relXY.id;
 						p2.x = relXY.x;
 						p2.y = relXY.y;
