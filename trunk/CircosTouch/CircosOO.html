@@ -168,7 +168,10 @@
 				var scale = thisDist / dist;
 				sccp.renderingRules.scale *= scale;
 				sccp.renderingRules.rotation += thisAngle;
+				canvasContext.save();
+				canvasContext.clearRect(0,0,500,500);
 				sccp.render(canvasContext);
+				canvasContext.restore();
 			});
 			// handle pointer up events
 			eventMonitor.bind('pointerUpMulti', function(evt, absXY, relXY, deltaXY) {
