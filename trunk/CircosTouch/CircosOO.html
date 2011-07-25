@@ -1,0 +1,197 @@
+<html>
+	<head>
+		<title>	Circos Plots</title>
+		<script type="text/javascript" src="Components.js"></script>
+		<script type="text/javascript" src="CircosObjects.js"></script>
+	</head>
+	<body>
+		<canvas id="circosPlot1" width=500 height=500>
+		</canvas>
+		<canvas id="circosPlot2" width=500 height=500>
+		</canvas>
+		<canvas id="circosPlot3" width=500 height=500>
+		</canvas>
+		<script type="text/javascript">
+			var snd = new Audio("dingding.wav");
+			snd.play();
+		</script>
+		<script type="text/javascript">
+			var counter = 0;
+			function generateChildren(c, canHaveChildren){
+				var thickness = 5;
+				var children = new Array();
+				for (var i=c.start; i < c.end - .1;) {
+					var sweep = Math.random() * (c.end / 2 - .1) + .1;
+					if(i + sweep > c.end){
+						if(c.end == Math.PI * 2){
+							sweep = c.end - i - .1;
+						} else {
+							sweep = c.end - i;
+						}
+					}
+					var subChild = new Arc(i, i + sweep, c.dist - 10, c.dist - 5, "".concat(counter++));
+					i += sweep + .1;
+					if(Math.random() > .75 && canHaveChildren){
+						subChild.children = generateChildren(subChild, true);
+					}
+					children.push(subChild);
+				}
+				return children;
+			}
+		
+			var canvas = document.getElementById("circosPlot1");
+			var canvasContext = canvas.getContext("2d");
+			var superArc = new Arc(0, 2 * Math.PI, 120, 140, "");
+			superArc.children = generateChildren(superArc, true);
+			var cons = new Array();
+			var rand = Math.random() * 50;
+			for(var i = 0; i < rand; i++) {
+				var t1 = Math.random() * Math.PI * 2;
+				var t2 = Math.random() * Math.PI * 2;
+				while(t1 == t2) {
+					t1 = Math.random() * Math.PI * 2;
+				}
+				cons.push(new Curve(Math.min(t1,t2), Math.max(t1,t2), 100));
+			}
+			var p = new CircosPlot(superArc, cons, {
+				x:250,
+				y:250
+			}, new RenderingRules({
+				font:"Verdana",
+				fontPt:12,
+				curveStroke:"#000000",
+				arcFill:"#00FF00",
+				rotation:0.0,
+				scale:.5
+			}));
+			//p.render(canvasContext);
+			
+			var cp = new CircosPlot(superArc, cons, {x:250,y:250},new RenderingRules({
+				font:"Verdana",
+				fontPt:12,
+				curveStroke:"#000000",
+				arcFill:"#00FF00",
+				rotation:0,
+				scale:1
+			}));
+			
+			
+			var sccp = new SelfContainedCircosPlot(superArc, cons, 500, 500);
+			
+			sccp.render(canvasContext);
+			
+			var rot = 0;
+			
+			/*
+			 * Mouse listeners
+			 */
+			/*canvas.onmousedown = function(evt){
+				var hit = sccp.getPlot().findHitByEvent(evt, canvasContext);
+				if(hit == null){
+					return;
+				}
+				p.createSubPlot(document.getElementById("circosPlot2").getContext("2d"), hit.start, hit.end, 500, 500);
+				cp.zoomInOnSection(document.getElementById("circosPlot3").getContext("2d"), hit.start, hit.end, 500, 500);
+			}
+			
+			canvas.onmouseup = function(evt){
+				canvasContext.fillStyle = "#FFFFFF";
+				canvasContext.fillRect(0,0,500,500);
+				sccp.rotate(.1);
+				sccp.render(canvasContext);
+			}*/
+			
+			
+			/* 
+			 * Touch listeners
+			 */
+		var lastAngle = -1;
+		var dist = -1;
+		var angle = 0;
+			// handle pointer down events
+			eventMonitor.bind('pointerDownMulti', function(evt, absXY, relXY) {
+				var touchData = relXY;
+				while(touchData) {
+					if(p1.id == -1) {
+						p1.id = relXY.id;
+						p1.x = relXY.x;
+						p1.y = relXY.y;
+					} else if(p2.id == -1) {
+						p2.id = relXY.id;
+						p2.x = relXY.x;
+						p2.y = relXY.y;
+					}
+					if(p2.id != -1 && p1.id != -1){
+						lastAngle = getAngle(p1, p2);
+						dist = distance(p1,p2);
+					}
+					touchData = touchData.next;
+				} // while
+			});
+			// handle moves
+			eventMonitor.bind('pointerMoveMulti', function(evt, absXY, relXY) {
+				var touchData = relXY;
+
+				while(touchData) {
+					var col = -1;
+					if(touchData.id == p1.id) {
+						col = p1.col;
+						p1.x = touchData.x;
+						p1.y = touchData.y;
+					} else if(touchData.id == p2.id) {
+						col = p2.col;
+						p2.x = touchData.x;
+						p2.y = touchData.y;
+					}
+					touchData = touchData.next;
+				} // whiles
+				if(angle == -1 || dist == -1)
+					return;
+				var thisAngle = getAngle(p1, p2);
+				angle += (thisAngle - lastAngle);
+				angle %= Math.PI * 2;
+				lastAngle = thisAngle;
+				
+				var thisDist = distance(p1, p2);
+				var scale = thisDist / dist;
+				sccp.renderingRules.scale *= scale;
+				sccp.renderingRules.rotation += rotation;
+				sccp.render(canvasContext);
+			});
+			// handle pointer up events
+			eventMonitor.bind('pointerUpMulti', function(evt, absXY, relXY, deltaXY) {
+				if(relXY.id == p1.id) {
+					p1.id = -1;
+					dist = lastAngle = -1;
+				}
+				if(relXY.id == p2.id) {
+					p2.id = -1;
+					dist = lastAngle = -1;
+				}
+			});
+			
+			function getAngle(center, location){
+				var x = location.x - center.x;
+				var y = location.y - center.y;
+				if(x == 0 && y > 0)
+					return Math.PI / 2;
+				if(x == 0 && y < 0)
+					return 3 * Math.PI / 2;
+				if(y == 0 && x > 0)
+					return 0;
+				if(y == 0 && x < 0)
+					return Math.PI;
+				var angle = Math.atan(y/x);
+				if(x > 0 && y > 0)
+					return angle;
+				if(x < 0)
+					return Math.PI + angle
+				return Math.PI * 2 + angle;
+			}
+			
+			function distance(p1, p2){
+				return Math.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
+			}
+		</script>
+	</body>
+</html>
