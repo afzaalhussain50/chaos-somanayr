@@ -17,7 +17,7 @@
 			snd.play();
 		</script>
 		<script type="text/javascript">
-			console.log("version: .11");
+			console.log("version: .12");
 			var counter = 0;
 			function generateChildren(c, canHaveChildren){
 				var thickness = 5;
@@ -120,7 +120,7 @@
 		var lastAngle = -1;
 		var dist = -1;
 		var angle = 0;
-		var pos;
+		var pos = -1;
 			// handle pointer down events
 			eventMonitor.bind('pointerDownMulti', function(evt, absXY, relXY) {
 				var touchData = relXY;
@@ -163,7 +163,7 @@
 					}
 					touchData = touchData.next;
 				} // whiles
-				if((p1.id == -1 || p2.id == -1) && (p1.id != -1 || p2.id != -1)){ //one touch
+				if((p1.id == -1 || p2.id == -1) && (p1.id != -1 || p2.id != -1) && post != -1){ //one touch
 					var deltaX = pos.x - relXY.x;
 					var deltaY = pos.y - relXY.y;
 					console.log(deltaX);
