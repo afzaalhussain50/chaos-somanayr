@@ -17,7 +17,7 @@
 			snd.play();
 		</script>
 		<script type="text/javascript">
-			console.log("version: .08");
+			console.log("version: .09");
 			var counter = 0;
 			function generateChildren(c, canHaveChildren){
 				var thickness = 5;
@@ -138,7 +138,7 @@
 						lastAngle = getAngle(p1, p2);
 						dist = distance(p1,p2);
 					}
-					if((p1.id == -1 || p2.id == -1) && (p1.id != -1 && p2.id != -1)){ //one touch
+					if((p1.id == -1 || p2.id == -1) && (p1.id != -1 || p2.id != -1)){ //one touch
 						pos = touchdata;
 						console.log("One finger touch");
 					}
@@ -163,7 +163,7 @@
 					}
 					touchData = touchData.next;
 				} // whiles
-				if((p1.id == -1 || p2.id == -1) && (p1.id != -1 && p2.id != -1)){ //one touch
+				if((p1.id == -1 || p2.id == -1) && (p1.id != -1 || p2.id != -1)){ //one touch
 					var deltaX = pos.x - touchData.x;
 					var deltaY = pos.y - touchData.y;
 					console.log(deltaX);
