@@ -17,7 +17,7 @@
 			snd.play();
 		</script>
 		<script type="text/javascript">
-			console.log("version: .15");
+			console.log("version: .16");
 			var counter = 0;
 			function generateChildren(c, canHaveChildren){
 				var thickness = 5;
@@ -136,11 +136,10 @@
 					}
 					if(p2.id != -1 && p1.id != -1){
 						lastAngle = getAngle(p1, p2);
-						dist = distance(p1,p2);
+						dist = distance(p1,p2) * sccp.renderingRules.scale;
 					}
 					if((p1.id == -1 || p2.id == -1) && (p1.id != -1 || p2.id != -1)){ //one touch
 						pos = touchData;
-						console.log("One finger touch");
 					}
 					touchData = touchData.next;
 					angle = sccp.renderingRules.rotation;
@@ -166,7 +165,6 @@
 				if((p1.id == -1 || p2.id == -1) && (p1.id != -1 || p2.id != -1) && pos != -1){ //one touch
 					var deltaX = pos.x - relXY.x;
 					var deltaY = pos.y - relXY.y;
-					console.log(deltaX);
 					sccp.center.x -= deltaX;
 					sccp.center.y -= deltaY;
 					pos = relXY;
