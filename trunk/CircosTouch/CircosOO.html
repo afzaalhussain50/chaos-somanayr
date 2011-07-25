@@ -17,7 +17,7 @@
 			snd.play();
 		</script>
 		<script type="text/javascript">
-			console.log("version: .06");
+			console.log("version: .07");
 			var counter = 0;
 			function generateChildren(c, canHaveChildren){
 				var thickness = 5;
@@ -120,6 +120,7 @@
 		var lastAngle = -1;
 		var dist = -1;
 		var angle = 0;
+		var pos;
 			// handle pointer down events
 			eventMonitor.bind('pointerDownMulti', function(evt, absXY, relXY) {
 				var touchData = relXY;
@@ -136,6 +137,9 @@
 					if(p2.id != -1 && p1.id != -1){
 						lastAngle = getAngle(p1, p2);
 						dist = distance(p1,p2);
+					}
+					if((p1.id == -1 || p2.id == -1) && (p1.id != -1 && p2.id != -1)){ //one touch
+						pos = touchdata;
 					}
 					touchData = touchData.next;
 					angle = sccp.renderingRules.rotation;
@@ -158,21 +162,31 @@
 					}
 					touchData = touchData.next;
 				} // whiles
-				if(angle == -1 || dist == -1)
-					return;
-				var thisAngle = getAngle(p1, p2);
-				angle += (thisAngle - lastAngle);
-				angle %= Math.PI * 2;
-				lastAngle = thisAngle;
-				
-				var thisDist = distance(p1, p2);
-				var scale = thisDist / dist;
-				sccp.renderingRules.scale = scale;
-				sccp.renderingRules.rotation = angle;
-				canvasContext.save();
-				canvasContext.clearRect(0,0,500,500);
-				sccp.render(canvasContext);
-				canvasContext.restore();
+				if((p1.id == -1 || p2.id == -1) && (p1.id != -1 && p2.id != -1)){ //one touch
+					var deltaX = pos.x - touchData.x;
+					var deltaY = pos.y - touchData.y;
+					sccp.center.x += deltaX;
+					sccp.center.y += deltaY;
+					pos = touchData;
+					canvasContext.save();
+					canvasContext.clearRect(0,0,500,500);
+					sccp.render(canvasContext);
+					canvasContext.restore();
+				} else if(p2.id != -1 && p1.id != -1){
+					var thisAngle = getAngle(p1, p2);
+					angle += (thisAngle - lastAngle);
+					angle %= Math.PI * 2;
+					lastAngle = thisAngle;
+					
+					var thisDist = distance(p1, p2);
+					var scale = thisDist / dist;
+					sccp.renderingRules.scale = scale;
+					sccp.renderingRules.rotation = angle;
+					canvasContext.save();
+					canvasContext.clearRect(0,0,500,500);
+					sccp.render(canvasContext);
+					canvasContext.restore();
+				}
 			});
 			// handle pointer up events
 			eventMonitor.bind('pointerUpMulti', function(evt, absXY, relXY, deltaXY) {
@@ -184,6 +198,7 @@
 					p2.id = -1;
 					dist = lastAngle = -1;
 				}
+				pos = -1;
 			});
 			
 			function getAngle(center, location){
