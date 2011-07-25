@@ -17,7 +17,7 @@
 			snd.play();
 		</script>
 		<script type="text/javascript">
-			console.log("version: .04");
+			console.log("version: .05");
 			var counter = 0;
 			function generateChildren(c, canHaveChildren){
 				var thickness = 5;
@@ -138,6 +138,7 @@
 						dist = distance(p1,p2);
 					}
 					touchData = touchData.next;
+					angle = sccp.renderingRules.rotation;
 				} // while
 			});
 			// handle moves
@@ -167,7 +168,7 @@
 				var thisDist = distance(p1, p2);
 				var scale = thisDist / dist;
 				sccp.renderingRules.scale *= scale;
-				sccp.renderingRules.rotation += thisAngle;
+				sccp.renderingRules.rotation = angle;
 				canvasContext.save();
 				canvasContext.clearRect(0,0,500,500);
 				sccp.render(canvasContext);
