@@ -17,7 +17,7 @@
 			snd.play();
 		</script>
 		<script type="text/javascript">
-			console.log("version: .27");
+			console.log("version: .28");
 			var counter = 0;
 			function generateChildren(c, canHaveChildren){
 				var thickness = 5;
@@ -133,6 +133,8 @@
 ;					}
 					touchData = touchData.next;
 				}
+				console.log('Is p1 valid: ' + p1Valid);
+				console.log('Is p2 valid: ' + p2Valid);
 				touchData = relXY;
 				while(touchData) {
 					if(!p1Valid) {
@@ -151,8 +153,6 @@
 						dist = distance(p1,p2) / sccp.renderingRules.scale;
 						console.log('p1: (' + p1.x + ', ' + p1.y + ')');
 						console.log('p2: (' + p2.x + ', ' + p2.y + ')');
-						console.log('distance: ' + distance(p1,p1));
-						console.log("(down)sccp scale: ".concat(sccp.renderingRules.scale));
 						console.log("2 touch");
 						pos = -1;
 					}
@@ -163,8 +163,6 @@
 					touchData = touchData.next;
 					angle = sccp.renderingRules.rotation;
 				} // while
-				console.log('(down)dist: ' + dist);
-				console.log('(down)angle: ' + angle);
 			});
 			
 			// handle moves
@@ -209,8 +207,6 @@
 					sccp.render(canvasContext);
 					canvasContext.restore();
 				}
-				console.log('(move)dist: ' + dist);
-				console.log('(move)angle: ' + angle);
 			});
 			
 			// handle pointer up events
@@ -224,9 +220,6 @@
 					dist = lastAngle = -1;
 				}
 				pos = -1;
-				console.log('(up)scale: ' + sccp.renderingRules.scale);
-				console.log('(up)angle: ' + sccp.renderingRules.rotation);
-				console.log('center: (' + sccp.center.x + ', ' + sccp.center.y + ')');
 				console.log();
 			});
 			
