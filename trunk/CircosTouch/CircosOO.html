@@ -17,7 +17,7 @@
 			snd.play();
 		</script>
 		<script type="text/javascript">
-			console.log("version: .21");
+			console.log("version: .22");
 			var counter = 0;
 			function generateChildren(c, canHaveChildren){
 				var thickness = 5;
@@ -213,6 +213,10 @@
 					dist = lastAngle = -1;
 				}
 				pos = -1;
+				console.log('scale: ' + sccp.renderingRules.scale);
+				console.log('angle: ' + sccp.renderingRules.rotation);
+				console.log('center: (' + sccp.center.x + ', ' + sccp.center.y + ')');
+				console.log();
 			});
 			
 			function getAngle(center, location){
