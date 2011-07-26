@@ -17,7 +17,7 @@
 			snd.play();
 		</script>
 		<script type="text/javascript">
-			console.log("version: .23");
+			console.log("version: .24");
 			var counter = 0;
 			function generateChildren(c, canHaveChildren){
 				var thickness = 5;
@@ -149,6 +149,7 @@
 					if(p1Valid && p2Valid){
 						lastAngle = getAngle(p1, p2);
 						dist = distance(p1,p2) / sccp.renderingRules.scale;
+						console.log("(down)sccp scale: ".concat(sccp.renderingRules.scale));
 						console.log("2 touch");
 						pos = -1;
 					}
