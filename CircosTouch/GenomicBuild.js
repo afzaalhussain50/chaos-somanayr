@@ -36,7 +36,7 @@ Array.prototype.contains = function(element) {
 }
 var chromosomes = ["chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15", "chr16", "chr17", "chr18", "chr19", "chr20", "chr21", "chr22", "chrX", "chrY", "hgall"]
 
-var genomeEnd;
+var genomeEnd = 3080419418;
 
 /**
  * offsetList:
@@ -59,6 +59,12 @@ function buildPlot(lines, offsetList, w, h) {
 	for(var i = 1; i < lines.length; i++) {
 		var data = getLineData(lines[i]);
 		var leftArc = new Arc(2 * Math.PI * data.left.start / genomeEnd, 2 * Math.PI * data.left.end / genomeEnd, offsetList.innerOff, offsetList.innerOff + offsetList.innerThickness, "");
+		if(chromosomeArcs[data.left.chromosome] == undefined){
+			console.log('Left undefined; line ' + i + '; value: ' + data.left.chromosome);
+		}
+		if(chromosomeArcs[data.right.chromosome] == undefined){
+			console.log('Right undefined; line ' + i + '; value: ' + data.right.chromosome);
+		}
 		if(!chromosomeArcs[data.left.chromosome].children.contains(leftArc))
 			chromosomeArcs[data.left.chromosome].children.push(leftArc);
 		var rightArc = new Arc(2 * Math.PI * data.right.start / genomeEnd, 2 * Math.PI * data.right.end / genomeEnd, offsetList.innerOff, offsetList.innerOff + offsetList.innerThickness, "");
