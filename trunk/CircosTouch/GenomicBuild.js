@@ -55,13 +55,19 @@ function buildPlot(lines, offsetList, w, h) {
 	for(var i = 0; i < chromosomes.length; i++) {
 		chromosomeArcs[chromosomes[i]] = new Arc(offsets[chromosomes[i]], (i == chromosomes.length - 1) ? 2 * Math.PI : offsets[chromosomes[i + 1]], offsetList.chrOff, offsetList.chrOff + offsetList.chrThickness, chromosomes[i]);
 	}
+	
+	console.log(chromosomeArcs);
 
 	for(var i = 0; i < lines.length; i++) {
 		console.log
 		var data = getLineData(lines[i]);
 		var leftArc = new Arc(2 * Math.PI * data.left.start / genomeEnd, 2 * Math.PI * data.left.end / genomeEnd, offsetList.innerOff, offsetList.innerOff + offsetList.innerThickness, "");
-		chromosomeArcs[data.left.chromosome].children.push(leftArc);
+		console.log('Left: ' + data.left.chromosome);
+		if(!chromosomeArcs[data.left.chromosome].children.contains(leftArc))
+			chromosomeArcs[data.left.chromosome].children.push(leftArc);
 		var rightArc = new Arc(2 * Math.PI * data.right.start / genomeEnd, 2 * Math.PI * data.right.end / genomeEnd, offsetList.innerOff, offsetList.innerOff + offsetList.innerThickness, "");
+		if(!chromosomeArcs[data.right.chromosome].children.contains(rightArc))
+			chromosomeArcs[data.right.chromosome].children.push(rightArc);
 		chromosomeArcs[data.right.chromosome].children.push(rightArc);
 		var curve = new Curve(2 * Math.PI * ((data.left.start + data.left.end) / 2) / genomeEnd, 2 * Math.PI * ((data.right.start + data.right.end) / 2) / genomeEnd, offsetList.curveRadius);
 	}
