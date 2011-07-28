@@ -3,6 +3,7 @@
 		<title>	Circos Plots</title>
 		<script type="text/javascript" src="Components.js"></script>
 		<script type="text/javascript" src="CircosObjects.js"></script>
+		<script type="text/javascript" src="GenomicBuild.js"></script>
 		<script src="https://github.com/sidelab/interact/raw/master/interact.js"></script>
 	</head>
 	<body>
@@ -77,31 +78,12 @@
 				scale:1
 			}));
 			
-			
-			var sccp = new SelfContainedCircosPlot(superArc, cons, 500, 500);
+			var sccp = //new SelfContainedCircosPlot(superArc, cons, 500, 500);
+				buildPlotFromFile("http://chaos-somanayr.googlecode.com/svn/trunk/CircosTouch/edges.txt", {curveRadius:100, chrOff:120, chrThickness:20, innerOff:100, innerThickness:20}, 500, 500);
 			
 			sccp.render(canvasContext);
 			
 			var rot = 0;
-			
-			/*
-			 * Mouse listeners
-			 */
-			/*canvas.onmousedown = function(evt){
-				var hit = sccp.getPlot().findHitByEvent(evt, canvasContext);
-				if(hit == null){
-					return;
-				}
-				p.createSubPlot(document.getElementById("circosPlot2").getContext("2d"), hit.start, hit.end, 500, 500);
-				cp.zoomInOnSection(document.getElementById("circosPlot3").getContext("2d"), hit.start, hit.end, 500, 500);
-			}
-			
-			canvas.onmouseup = function(evt){
-				canvasContext.fillStyle = "#FFFFFF";
-				canvasContext.fillRect(0,0,500,500);
-				sccp.rotate(.1);
-				sccp.render(canvasContext);
-			}*/
 			
 			
 			/* 
@@ -117,10 +99,10 @@
 				col : "#0000FF",
 				id : -1
 			};
-		var lastAngle = -1;
-		var dist = -1;
-		var angle = 0;
-		var pos = -1;
+			var lastAngle = -1;
+			var dist = -1;
+			var angle = 0;
+			var pos = -1;
 			// handle pointer down events
 			eventMonitor.bind('pointerDownMulti', function(evt, absXY, relXY) {
 				var touchData = relXY;
