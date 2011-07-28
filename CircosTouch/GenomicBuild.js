@@ -58,7 +58,7 @@ function buildPlot(lines, offsetList, w, h) {
 	
 	console.log(chromosomeArcs);
 
-	for(var i = 0; i < lines.length; i++) {
+	for(var i = 1; i < lines.length; i++) {
 		console.log
 		var data = getLineData(lines[i]);
 		var leftArc = new Arc(2 * Math.PI * data.left.start / genomeEnd, 2 * Math.PI * data.left.end / genomeEnd, offsetList.innerOff, offsetList.innerOff + offsetList.innerThickness, "");
