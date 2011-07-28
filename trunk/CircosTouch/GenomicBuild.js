@@ -54,7 +54,7 @@ function buildPlot(lines, offsetList, w, h) {
 
 	for(var i = 0; i < chromosomes.length; i++) {
 		console.log(i);
-		chromosomeArcs[chromsomes[i]] = new Arc(offsets[chromosomes[i]], (i == chromosomes.length - 1) ? 2 * Math.PI : offsets[chromosomes[i + 1]], offsetList.chrOff, offsetList.chrOff + offsetList.chrThickness, chromosomes[i]);
+		chromosomeArcs[chromosomes[i]] = new Arc(offsets[chromosomes[i]], (i == chromosomes.length - 1) ? 2 * Math.PI : offsets[chromosomes[i + 1]], offsetList.chrOff, offsetList.chrOff + offsetList.chrThickness, chromosomes[i]);
 	}
 
 	for(var i = 0; i < lines.length; i++) {
