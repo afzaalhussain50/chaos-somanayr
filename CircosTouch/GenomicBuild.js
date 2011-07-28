@@ -66,6 +66,7 @@ function buildPlot(lines, offsetList, w, h) {
 		if(!chromosomeArcs[data.left.chromosome].children.contains(leftArc))
 			chromosomeArcs[data.left.chromosome].children.push(leftArc);
 		var rightArc = new Arc(2 * Math.PI * data.right.start / genomeEnd, 2 * Math.PI * data.right.end / genomeEnd, offsetList.innerOff, offsetList.innerOff + offsetList.innerThickness, "");
+		console.log('Right: ' + data.right.chromosome);
 		if(!chromosomeArcs[data.right.chromosome].children.contains(rightArc))
 			chromosomeArcs[data.right.chromosome].children.push(rightArc);
 		chromosomeArcs[data.right.chromosome].children.push(rightArc);
