@@ -74,9 +74,10 @@ function buildPlot(lines, offsetList, w, h) {
 			chromosomeArcs[data.right.chromosome].children.push(rightArc);
 		chromosomeArcs[data.right.chromosome].children.push(rightArc);
 		var curve = new Curve(2 * Math.PI * ((data.left.start + data.left.end) / 2) / genomeEnd, 2 * Math.PI * ((data.right.start + data.right.end) / 2) / genomeEnd, offsetList.curveRadius);
+		curves.push(curve);
 	}
-
-	superArc.children = curves;
+	
+	superArc.children = chromosomeArcs;
 
 	return new SelfContainedCircosPlot(superArc, curves, w, h);
 }
