@@ -55,7 +55,7 @@ function buildPlot(lines, offsetList, w, h) {
 	for(var i = 0; i < chromosomes.length; i++) {
 		chromosomeArcs[chromosomes[i]] = new Arc(offsets[chromosomes[i]], (i == chromosomes.length - 1) ? 2 * Math.PI : offsets[chromosomes[i + 1]], offsetList.chrOff, offsetList.chrOff + offsetList.chrThickness, chromosomes[i]);
 	}
-	
+	console.log('Entering read loop');
 	for(var i = 1; i < lines.length; i++) {
 		if(lines[i] == "")
 			break;
@@ -76,6 +76,8 @@ function buildPlot(lines, offsetList, w, h) {
 		var curve = new Curve(2 * Math.PI * ((data.left.start + data.left.end) / 2) / genomeEnd, 2 * Math.PI * ((data.right.start + data.right.end) / 2) / genomeEnd, offsetList.curveRadius);
 		curves.push(curve);
 	}
+	
+	console.log('Exited read loop');
 	
 	superArc.children = chromosomeArcs;
 
