@@ -57,6 +57,8 @@ function buildPlot(lines, offsetList, w, h) {
 	}
 	
 	for(var i = 1; i < lines.length; i++) {
+		if(lines[i] == "")
+			break;
 		var data = getLineData(lines[i]);
 		var leftArc = new Arc(2 * Math.PI * data.left.start / genomeEnd, 2 * Math.PI * data.left.end / genomeEnd, offsetList.innerOff, offsetList.innerOff + offsetList.innerThickness, "");
 		if(chromosomeArcs[data.left.chromosome] == undefined){
