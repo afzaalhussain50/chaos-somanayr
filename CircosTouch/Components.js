@@ -61,12 +61,14 @@ function Arc(startAngle, endAngle, startDistance, endDistance, label){
 	
 	this.label = label;
 	
+	this.color = "#0000FF";
+	
 	this.render = function(ctx, center, renderingRules){
 		var thetaStart = (this.start + renderingRules.rotation) % 256;
 		var thetaEnd = (this.end + renderingRules.rotation) % 256;
 		/* arc */
 		ctx.save();
-		ctx.fillStyle = renderingRules.arcFill;
+		ctx.fillStyle = this.color;
 		
 		ctx.beginPath();
 		ctx.arc(center.x, center.y, (this.dist + this.thickness) * renderingRules.scale, thetaStart, thetaEnd, false);
@@ -147,6 +149,7 @@ function Curve(startAngle, endAngle, distance){
 	this.start = startAngle;
 	this.end = endAngle;
 	this.dist = distance;
+	this.color = "#000000";
 	if(startAngle == endAngle)
 		thetaEnd += .01;
 	else if(startAngle + Math.PI == endAngle)
@@ -163,7 +166,7 @@ function Curve(startAngle, endAngle, distance){
 		var theta2 = getAngle(center2, p2);
 		
 		ctx.save();
-		ctx.strokeStyle = renderingRules.curveStroke;
+		ctx.strokeStyle = this.color;
 		ctx.moveTo(p1.x, p1.y);
 		ctx.arc(center2.x, center2.y, Math.abs(l), theta1, theta2, l < 0);
 		ctx.stroke();
@@ -191,16 +194,6 @@ function Curve(startAngle, endAngle, distance){
  * scale - 1.0
  */
 function RenderingRules(rules){
-	if(rules.curveStroke){
-		this.curveStroke = rules.curveStroke;
-	} else {
-		this.curveStroke = "#000000";
-	}
-	if(rules.arcFill){
-		this.arcFill = rules.arcFill;
-	} else {
-		this.arcFill = "#0000FF";
-	}
 	if(rules.font){
 		this.font = rules.font;
 	} else {
