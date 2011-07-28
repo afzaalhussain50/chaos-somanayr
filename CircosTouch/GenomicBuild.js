@@ -80,6 +80,8 @@ function buildPlot(lines, offsetList, w, h) {
 
 function getLineData(line) {
 	var data = line.split("\t");
+	
+	console.log(data);
 
 	var leftStart = offsets[data[0]] + data[1];
 	var leftEnd = offsets[data[0]] + data[2];
