@@ -98,7 +98,7 @@ function getLineData(line) {
 		right : {
 			start : rightStart,
 			end : rightEnd,
-			chromsome : data[3]
+			chromosome : data[3]
 		}
 	};
 }
