@@ -1,4 +1,4 @@
-var offsets = new HashMap();
+var offsets = new Array();
 offsets["chr1"] = "0";
 offsets["chr2"] = "247249719";
 offsets["chr3"] = "490200868";
