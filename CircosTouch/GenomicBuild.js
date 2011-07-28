@@ -94,7 +94,7 @@ function getLineData(line) {
 	};
 }
 
-function buildPlotFromFile(file, offsets, w, h) {
+function buildPlotFromFile(file, offsets, w, h, callback) {
 	var lines;
 	var txtFile = new XMLHttpRequest();
 	txtFile.open("GET", file, true);
@@ -104,12 +104,11 @@ function buildPlotFromFile(file, offsets, w, h) {
 				allText = txtFile.responseText;
 				lines = txtFile.responseText.split("\n");
 				// Will separate each line into an array
+				callback(buildPlot(lines, offsets, w, h));
 			} else {
 				throw "File not found";
 			}
 		}
 	}
 	txtFile.send(null);
-	while(!lines){}
-	return buildPlot(lines, offsets, w, h);
 }
