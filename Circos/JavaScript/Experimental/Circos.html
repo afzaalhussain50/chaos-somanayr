@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<title>	Circos Plots</title>
+		<script type="text/javascript" src="Components.js"></script>
+		<script type="text/javascript" src="CircosObjects.js"></script>
+		<script type="text/javascript" src="GenomicBuild.js"></script>
+	</head>
+	<body>
+		<canvas id="circosPlot1" width=500 height=500>
+		</canvas>
+		<canvas id="circosPlot2" width=500 height=500>
+		</canvas>
+		<canvas id="circosPlot3" width=500 height=500>
+		</canvas>
+		<script type="text/javascript">
+			var snd = new Audio("dingding.wav");
+			snd.play();
+		</script>
+		<script type="text/javascript">
+		
+			var canvas = document.getElementById("circosPlot1");
+			var canvasContext = canvas.getContext("2d");
+			
+			var sccp;
+			
+			buildPlotFromFile("http://chaos-somanayr.googlecode.com/svn/trunk/CircosOO/edges.txt", {curveRadius:200, chrOff:240, chrThickness:40, innerOff:200, innerThickness:40}, 500, 500, function(plot){sccp = plot; sccp.render(canvasContext)});
+			
+			var rot = 0;
+			
+			/*
+			 * Listeners
+			 */
+			canvas.onmousedown = function(evt){
+				var hit = sccp.getPlot().findHitByEvent(evt, canvasContext);
+				if(hit == null){
+					return;
+				}
+				p.createSubPlot(document.getElementById("circosPlot2").getContext("2d"), hit.start, hit.end, 500, 500);
+				cp.zoomInOnSection(document.getElementById("circosPlot3").getContext("2d"), hit.start, hit.end, 500, 500);
+			}
+			
+			canvas.onmouseup = function(evt){
+				canvasContext.fillStyle = "#FFFFFF";
+				canvasContext.fillRect(0,0,500,500);
+				sccp.rotate(.1);
+				sccp.render(canvasContext);
+			}
+			
+			function drawSubPlot(start, end){
+				var ctx2 = document.getElementById("circosPlot2").getContext("2d");
+				var canvasW = 500;
+				var canvasH = 500;
+				ctx2.save();
+				ctx2.fillStyle = "#FFFFFF";
+				ctx2.fillRect(0, 0, canvasW, canvasH);
+				p.createSubPlot(ctx2, [start],[end], 500, 500);
+				ctx2.restore();
+			}
+		</script>
+	</body>
+</html>
