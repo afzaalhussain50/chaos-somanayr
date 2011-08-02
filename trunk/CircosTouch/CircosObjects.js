@@ -133,6 +133,7 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 		return plot;
 	}
 	this.simplify = function(){
+		console.log('typeof connections: ' + (typeof connections));
 		var n = connections[0].dist;
 		for (var i=0; i < connections.length; i++) {
 		  n = Math.min(n, connections[i]);
