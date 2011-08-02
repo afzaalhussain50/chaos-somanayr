@@ -171,9 +171,13 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 		if(thick){
 			center2 = center;
 		} else {
+			var renderingRules = new RenderingRules({});
+			if(this.renderingRules){
+				renderingRules = this.renderingRules;
+			}
 			/* find center */
-			var thetaStart = (arc.start + this.renderingRules.rotation) % 256;
-			var thetaEnd = (arc.end + this.renderingRules.rotation) % 256;
+			var thetaStart = (arc.start + renderingRules.rotation) % 256;
+			var thetaEnd = (arc.end + renderingRules.rotation) % 256;
 			var h = renderingRules.scale * arc.dist / Math.cos((thetaEnd - thetaStart) / 2);
 			var l = renderingRules.scale * arc.dist * Math.tan((thetaEnd - thetaStart) / 2);
 			var center2 = pointAt(center, h, (thetaEnd + thetaStart) / 2);
