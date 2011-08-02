@@ -180,6 +180,7 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 			var thetaEnd = (arc.end + renderingRules.rotation) % 256;
 			var r = renderingRules.scale * arc.dist / Math.cos((thetaEnd - thetaStart) / 2);
 			var l = renderingRules.scale * arc.dist * Math.tan((thetaEnd - thetaStart) / 2);
+			console.log(this.center);
 			var center2 = pointAt(this.center, r, (thetaEnd + thetaStart) / 2);
 		}
 		
