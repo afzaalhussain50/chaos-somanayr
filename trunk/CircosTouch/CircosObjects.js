@@ -134,10 +134,10 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 	}
 	this.simplify = function(){
 		console.log('typeof connections: ' + (typeof connections));
-		console.log(connections);
+		console.log(connections[0]);
 		var n = connections[0].dist;
 		for (var i=0; i < connections.length; i++) {
-		  n = Math.min(n, connections[i]);
+		  n = Math.min(n, connections[i].dist);
 		}
 		var minCurve = 2 * Math.atan((2 * n - n * n) / (2 * n - 2));
 		var screen = {x:0, y:0, width:w, height:h};
@@ -159,6 +159,8 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 		for (var i=0; i < superArc.children.length; i++) {
 			assess(newSuperArc, superArc.children[i]);
 		}
+		
+		console.log(newCurves);
 		return new SelfContainedCircosPlot(newSuperArc, newCurves, w, h);
 	}
 	
