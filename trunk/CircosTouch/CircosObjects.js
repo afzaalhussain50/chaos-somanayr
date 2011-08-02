@@ -132,10 +132,66 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 	this.getPlot = function(){
 		return plot;
 	}
+	this.simplify = function(){
+		var n = connections[0].dist;
+		for (var i=0; i < connections.length; i++) {
+		  n = Math.min(n, connections[i]);
+		}
+		var minCurve = 2 * Math.arctan((2 * n - n * n) / (2 * n - 2));
+		var screen = {x:0, y:0, width:w, height:h};
+		var newCurves = new Array();
+		var newSuperArc = new Arc(0, 2 * Math.PI, 100, 120, "");
+		for(var i=0; i < connections.length; i++){
+			if(connections[i].end - connections[i].start > minCurve && isArcVisible(screen, connections[i]))
+				newCurves.push(new Curve(connections[i].start, connections[i].end, connections[i].dist));
+		}
+		function assess(arc, appendTo){
+			if(arc.end - arc.start > 1 / arc.dist && isArcVisible(screen, arc)){
+				appendTo.children.push(arc);
+				for (var i=0; i < arc.children.length; i++) {
+					assess(arc.children[i], appendTo.children[appendTo.children.length - 1]);
+				}
+			}
+		}
+		
+		for (var i=0; i < superArc.children.length; i++) {
+			assess(newSuperArc, superArc.children[i]);
+		}
+		return new SelfContainedCircosPlot(newSuperArc, newCurves, w, h);
+	}
+	
+	function isArcVisible(view, arc){
+		var thick = (arc.thickness);
+		
+		var center2;
+		if(thick){
+			center2 = center;
+		} else {
+			/* find center */
+			var thetaStart = (startAngle + renderingRules.rotation) % 256;
+			var thetaEnd = (endAngle + renderingRules.rotation) % 256;
+			var h = renderingRules.scale * this.dist / Math.cos((thetaEnd - thetaStart) / 2);
+			var l = renderingRules.scale * this.dist * Math.tan((thetaEnd - thetaStart) / 2);
+			var center2 = pointAt(center, h, (thetaEnd + thetaStart) / 2);
+		}
+		
+		var d1 = distanceTo(center2, {x:view.x, y:view.y}) > arc.dist;
+		var d2 = distanceTo(center2, {x:view.x, y:view.y + view.height}) > arc.dist;
+		var d3 = distanceTo(center2, {x:view.x + view.width, y:view.y}) > arc.dist;
+		var d4 = distanceTo(center2, {x:view.x + view.width, y:view.y + view.height}) > arc.dist;
+		
+		return !(d1 == d2 && d2 == d3 && d3 == d4); //at least one has to be different. If they're all true, then the arc is too close, if they're all false, the arc is too far
+	}
+	
+	function distanceTo(p1, p2){
+		var x = (p2.x - p1.x);
+		var y = (p2.y - p1.y);
+		return Math.sqrt(x * x - y * y);
+	}
 }
 
 /**
- * This plot object is easier to use than plot,
+ * This plot object is easier to use than Plot,
  * but still more complex than SelfContainedCircosPlot
  * 
  * setRotataion():void
