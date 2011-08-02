@@ -137,7 +137,7 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 		for (var i=0; i < connections.length; i++) {
 		  n = Math.min(n, connections[i]);
 		}
-		var minCurve = 2 * Math.arctan((2 * n - n * n) / (2 * n - 2));
+		var minCurve = 2 * Math.atan((2 * n - n * n) / (2 * n - 2));
 		var screen = {x:0, y:0, width:w, height:h};
 		var newCurves = new Array();
 		var newSuperArc = new Arc(0, 2 * Math.PI, 100, 120, "");
