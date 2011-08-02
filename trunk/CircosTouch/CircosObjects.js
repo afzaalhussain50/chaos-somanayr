@@ -166,7 +166,7 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 	
 	function isArcVisible(view, arc){
 		var thick = (arc.thickness);
-		
+		var center = (this.center) ? this.center : {x:w/2, y:h/2};
 		var center2;
 		if(thick){
 			center2 = this.center;
@@ -180,8 +180,8 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 			var thetaEnd = (arc.end + renderingRules.rotation) % 256;
 			var r = renderingRules.scale * arc.dist / Math.cos((thetaEnd - thetaStart) / 2);
 			var l = renderingRules.scale * arc.dist * Math.tan((thetaEnd - thetaStart) / 2);
-			console.log(this.center);
-			var center2 = pointAt(this.center, r, (thetaEnd + thetaStart) / 2);
+			console.log(center);
+			var center2 = pointAt(center, r, (thetaEnd + thetaStart) / 2);
 		}
 		
 		var d1 = distanceTo(center2, {x:view.x, y:view.y}) > arc.dist;
