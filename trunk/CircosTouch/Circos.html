@@ -18,19 +18,19 @@
 			snd.play();
 		</script>
 		<script type="text/javascript">
-			console.log("version: .53");
-			
+			console.log("version: .54");
+
 			var canvas = document.getElementById("circosPlot1");
 			var canvasContext = canvas.getContext("2d");
-			
+
 			var realPlot;
 			var sccp;
-			
+
 			buildPlotFromFile("http://chaos-somanayr.googlecode.com/svn/trunk/CircosTouch/edges.txt", {curveRadius:200, chrOff:240, chrThickness:40, innerOff:200, innerThickness:40}, 500, 500, function(plot){realplot = plot; sccp = plot.simplify(); sccp.render(canvasContext)});
-			
+
 			var rot = 0;
-			
-			/* 
+
+			/*
 			 * Touch listeners
 			 */
 			var eventMonitor = INTERACT.watch(canvas, {
@@ -84,7 +84,7 @@
 					angle = sccp.renderingRules.rotation;
 				} // while
 			});
-			
+
 			// handle moves
 			eventMonitor.bind('pointerMoveMulti', function(evt, absXY, relXY) {
 				var touchData = relXY;
@@ -117,7 +117,7 @@
 					angle += (thisAngle - lastAngle);
 					angle %= Math.PI * 2;
 					lastAngle = thisAngle;
-					
+
 					var thisDist = distance(p1, p2);
 					var scale = thisDist / dist;
 					sccp.renderingRules.scale = scale;
@@ -128,7 +128,7 @@
 					canvasContext.restore();
 				}
 			});
-			
+
 			// handle pointer up events
 			eventMonitor.bind('pointerUpMulti', function(evt, absXY, relXY, deltaXY) {
 				if(relXY.id == p1.id) {
@@ -141,7 +141,7 @@
 				}
 				pos = -1;
 			});
-			
+
 			function getAngle(center, location){
 				var x = location.x - center.x;
 				var y = location.y - center.y;
@@ -160,7 +160,7 @@
 					return Math.PI + angle
 				return Math.PI * 2 + angle;
 			}
-			
+
 			function distance(p1, p2){
 				return Math.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
 			}
