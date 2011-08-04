@@ -23,14 +23,18 @@
 			var canvas = document.getElementById("circosPlot1");
 			var canvasContext = canvas.getContext("2d");
 
-			var realPlot;
-			var sccp;
+			var realPlot; 	//the actual plot, not rendered
+			var sccp;		//the simplified plot
 
 			buildPlotFromFile("http://chaos-somanayr.googlecode.com/svn/trunk/CircosTouch/edges.txt", {curveRadius:200, chrOff:240, chrThickness:40, innerOff:200, innerThickness:40}, 500, 500, function(plot){realplot = plot; sccp = plot.simplify(); sccp.render(canvasContext)});
 
+<<<<<<< .mine
+			/* 
+=======
 			var rot = 0;
 
 			/*
+>>>>>>> .r126
 			 * Touch listeners
 			 */
 			var eventMonitor = INTERACT.watch(canvas, {
@@ -58,9 +62,10 @@
 						p2Valid = true
 ;					}
 					touchData = touchData.next;
-				}
+				} //we can't check with p1.id == relXY.id because if p1 is lifted off the canvas, the event does not register
 				touchData = relXY;
 				while(touchData) {
+					//touch assignments to unused pointers
 					if(!p1Valid) {
 						p1.id = touchData.id;
 						p1.x = touchData.x;
@@ -72,58 +77,70 @@
 						p2.y = touchData.y;
 						p2Valid = true;
 					}
-					if(p1Valid && p2Valid){
-						lastAngle = getAngle(p1, p2);
-						dist = distance(p1,p2) / sccp.renderingRules.scale;
-						pos = -1;
-					}
-					if((!p1Valid || !p2Valid) && (p1Valid || p2Valid)){ //one touch
-						pos = touchData;
-					}
 					touchData = touchData.next;
-					angle = sccp.renderingRules.rotation;
-				} // while
+				} // while			
+				angle = sccp.renderingRules.rotation; //default angle
+					
+				if(p1Valid && p2Valid){ //two touch case
+					lastAngle = getAngle(p1, p2); //for reference
+					dist = distance(p1,p2) / sccp.renderingRules.scale;
+					pos = -1;
+				}
+				
+				if((!p1Valid || !p2Valid) && (p1Valid || p2Valid)){ //one touch case -- check for one valid and one not valid. There is no XOR in JavaScript, but this is essentially XOR
+					pos = touchData;
+				}
 			});
+<<<<<<< .mine
 
+
+			
+=======
+
+>>>>>>> .r126
+			/*
+			 * FIXME: I'm pretty sure all the math here is right. There is some bugginess with zooming and rotating that I haven't been able to find the source of.
+			 * It seems that if you pinch first, everything works OK. Panning first will bug on pinch/pan, rotating always involves some pinching or anti-pinching (is that a word???), anti-pinching first will cause the screen to go blank
+			 */
+			
 			// handle moves
 			eventMonitor.bind('pointerMoveMulti', function(evt, absXY, relXY) {
 				var touchData = relXY;
 
-				while(touchData) {
-					var col = -1;
+				while(touchData) { //reassign locations
 					if(touchData.id == p1.id) {
-						col = p1.col;
 						p1.x = touchData.x;
 						p1.y = touchData.y;
 					} else if(touchData.id == p2.id) {
-						col = p2.col;
 						p2.x = touchData.x;
 						p2.y = touchData.y;
 					}
 					touchData = touchData.next;
-				} // whiles
+				}
 				if((p1.id == -1 || p2.id == -1) && (p1.id != -1 || p2.id != -1) && pos != -1){ //one touch
-					var deltaX = pos.x - relXY.x;
+					var deltaX = pos.x - relXY.x; //calculate the change in finger position
 					var deltaY = pos.y - relXY.y;
 					sccp.center.x -= deltaX;
 					sccp.center.y -= deltaY;
 					pos = relXY;
 					canvasContext.save();
-					canvasContext.clearRect(0,0,500,500);
+					canvasContext.fillStyle = "#FFFFFF";
+					canvasContext.fillRect(0,0,500,500);
 					sccp.render(canvasContext);
 					canvasContext.restore();
-				} else if(p2.id != -1 && p1.id != -1){
+				} else if(p2.id != -1 && p1.id != -1){ //two touch
 					var thisAngle = getAngle(p1, p2);
 					angle += (thisAngle - lastAngle);
 					angle %= Math.PI * 2;
 					lastAngle = thisAngle;
 
-					var thisDist = distance(p1, p2);
+					var thisDist = distance(p1, p2);//distance between the fingers
 					var scale = thisDist / dist;
 					sccp.renderingRules.scale = scale;
 					sccp.renderingRules.rotation = angle;
 					canvasContext.save();
-					canvasContext.clearRect(0,0,500,500);
+					canvasContext.fillStyle = "#FFFFFF";
+					canvasContext.fillRect(0,0,500,500);
 					sccp.render(canvasContext);
 					canvasContext.restore();
 				}
@@ -131,6 +148,7 @@
 
 			// handle pointer up events
 			eventMonitor.bind('pointerUpMulti', function(evt, absXY, relXY, deltaXY) {
+				//free pointers so that they can be used for other touches
 				if(relXY.id == p1.id) {
 					p1.id = -1;
 					dist = lastAngle = -1;
@@ -142,7 +160,7 @@
 				pos = -1;
 			});
 
-			function getAngle(center, location){
+			function getAngle(center, location){ // returns the angle in a circle relative to the center and the point. Radius is irrelevant
 				var x = location.x - center.x;
 				var y = location.y - center.y;
 				if(x == 0 && y > 0)
