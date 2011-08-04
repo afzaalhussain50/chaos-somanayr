@@ -133,22 +133,22 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 		return plot;
 	}
 	this.simplify = function(){
-		console.log('typeof connections: ' + (typeof connections));
 		console.log(connections[0]);
 		var n = connections[0].dist;
 		for (var i=0; i < connections.length; i++) {
-		  n = Math.min(n, connections[i].dist);
+			n = Math.min(n, connections[i].dist); //smallest possible size of connections
 		}
-		var minCurve = 2 * Math.atan((2 * n - n * n) / (2 * n - 2));
+		var minCurve = 2 * Math.atan((2 * n - n * n) / (2 * n - 2)); //minimum curve is 1 pixel in size
 		var screen = {x:0, y:0, width:w, height:h};
 		var newCurves = new Array();
 		var newSuperArc = new Arc(0, 2 * Math.PI, 100, 120, "");
 		for(var i=0; i < connections.length; i++){
-			if(connections[i].end - connections[i].start > minCurve && isArcVisible(screen, connections[i]))
+			if(connections[i].end - connections[i].start > minCurve && isArcVisible(screen, connections[i])) //Bigger than 1 pixel and on screen
 				newCurves.push(new Curve(connections[i].start, connections[i].end, connections[i].dist));
 		}
-		function assess(arc, appendTo){
-			if(arc.end - arc.start > 1 / arc.dist && isArcVisible(screen, arc)){
+		function assess(arc, appendTo){ //determines if an arc is applicable for use. If it is, it appends it to the parent arc.
+			//FIXME: I don't think this works properly!
+			if(arc.end - arc.start > 1 / arc.dist && isArcVisible(screen, arc)){ //1 pixel is 1 / arc.dist. Since the calculation is so simple, we do it every iteration for the most accurate rendering.
 				appendTo.children.push(arc);
 				for (var i=0; i < arc.children.length; i++) {
 					assess(arc.children[i], appendTo.children[appendTo.children.length - 1]);
@@ -188,6 +188,9 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 		var d2 = distanceTo(center2, {x:view.x, y:view.y + view.height}) > arc.dist;
 		var d3 = distanceTo(center2, {x:view.x + view.width, y:view.y}) > arc.dist;
 		var d4 = distanceTo(center2, {x:view.x + view.width, y:view.y + view.height}) > arc.dist;
+		
+		if(center2.x >= view.x && center2.x <= view.x + view.width && center2.y >= view.y && center2.y <= view.y + view.height) //case that center is within circle
+			return d1 || d2 || d3 || d4; //if it's within even one, it's in the circle
 		
 		return !(d1 == d2 && d2 == d3 && d3 == d4); //at least one has to be different. If they're all true, then the arc is too close, if they're all false, the arc is too far
 	}
