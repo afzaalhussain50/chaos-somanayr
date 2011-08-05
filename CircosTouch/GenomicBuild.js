@@ -1,33 +1,33 @@
 /*
- * Hashmap of the offsets of chromosomes in base pairs
+ * Hashmap of the CHR_OFFSETS of chromosomes in base pairs
  */
-var offsets = new Array();
-offsets["chr1"] = "0";
-offsets["chr2"] = "247249719";
-offsets["chr3"] = "490200868";
-offsets["chr4"] = "689702695";
-offsets["chr5"] = "880975758";
-offsets["chr6"] = "1061833624";
-offsets["chr7"] = "1232733616";
-offsets["chr8"] = "1391555040";
-offsets["chr9"] = "1537829866";
-offsets["chr10"] = "1678103118";
-offsets["chr11"] = "1813477855";
-offsets["chr12"] = "1947930239";
-offsets["chr13"] = "2080279773";
-offsets["chr14"] = "2194422753";
-offsets["chr15"] = "2300791338";
-offsets["chr16"] = "2401130253";
-offsets["chr17"] = "2489957507";
-offsets["chr18"] = "2568732249";
-offsets["chr19"] = "2644849402";
-offsets["chr20"] = "2708661053";
-offsets["chr21"] = "2771097017";
-offsets["chr22"] = "2818041340";
-offsets["chrX"] = "2867732772";
-offsets["chrY"] = "3022646526";
-offsets["chrM"] = "3080419480";
-offsets["hgall"] = "3080436051";
+var CHR_OFFSETS = new Array();
+CHR_OFFSETS["chr1"] = "0";
+CHR_OFFSETS["chr2"] = "247249719";
+CHR_OFFSETS["chr3"] = "490200868";
+CHR_OFFSETS["chr4"] = "689702695";
+CHR_OFFSETS["chr5"] = "880975758";
+CHR_OFFSETS["chr6"] = "1061833624";
+CHR_OFFSETS["chr7"] = "1232733616";
+CHR_OFFSETS["chr8"] = "1391555040";
+CHR_OFFSETS["chr9"] = "1537829866";
+CHR_OFFSETS["chr10"] = "1678103118";
+CHR_OFFSETS["chr11"] = "1813477855";
+CHR_OFFSETS["chr12"] = "1947930239";
+CHR_OFFSETS["chr13"] = "2080279773";
+CHR_OFFSETS["chr14"] = "2194422753";
+CHR_OFFSETS["chr15"] = "2300791338";
+CHR_OFFSETS["chr16"] = "2401130253";
+CHR_OFFSETS["chr17"] = "2489957507";
+CHR_OFFSETS["chr18"] = "2568732249";
+CHR_OFFSETS["chr19"] = "2644849402";
+CHR_OFFSETS["chr20"] = "2708661053";
+CHR_OFFSETS["chr21"] = "2771097017";
+CHR_OFFSETS["chr22"] = "2818041340";
+CHR_OFFSETS["chrX"] = "2867732772";
+CHR_OFFSETS["chrY"] = "3022646526";
+CHR_OFFSETS["chrM"] = "3080419480";
+CHR_OFFSETS["hgall"] = "3080436051";
 
 /*
  * Add a contains function 
@@ -42,7 +42,7 @@ Array.prototype.contains = function(element) {
 }
 var chromosomes = ["chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15", "chr16", "chr17", "chr18", "chr19", "chr20", "chr21", "chr22", "chrX", "chrY", "chrM", "hgall"]
 
-var genomeEnd = 3137161264;
+var GENOME_END = 3137161264;
 
 /**
  * Internal use only
@@ -65,10 +65,10 @@ function buildPlot(lines, offsetList, w, h) {
 	var curves = new Array();
 
 	for(var i = 0; i < chromosomes.length; i++) { 	//creates all the chromosome arcs with the names specified
-													//in chromsomes with the offsets specified in offsets.
+													//in chromsomes with the CHR_OFFSETS specified in CHR_OFFSETS.
 													//The size of the arc is proportional to its size on the genome
 													//but out of 2 PI instead of 3,137,161,264
-		chromosomeArcs[chromosomes[i]] = new Arc(offsets[chromosomes[i]], (i == chromosomes.length - 1) ? 2 * Math.PI : offsets[chromosomes[i + 1]], offsetList.chrOff, offsetList.chrOff + offsetList.chrThickness, chromosomes[i]);
+		chromosomeArcs[chromosomes[i]] = new Arc(CHR_OFFSETS[chromosomes[i]], (i == chromosomes.length - 1) ? 2 * Math.PI : CHR_OFFSETS[chromosomes[i + 1]], offsetList.chrOff, offsetList.chrOff + offsetList.chrThickness, chromosomes[i]);
 	}
 	
 	superArc.children = chromosomeArcs; //set the children of superArc to the arcs we need to render
@@ -86,18 +86,18 @@ function buildPlot(lines, offsetList, w, h) {
 		}
 		
 		// define the left side
-		var leftArc = new Arc(2 * Math.PI * data.left.start / genomeEnd, 2 * Math.PI * data.left.end / genomeEnd, offsetList.innerOff, offsetList.innerOff + offsetList.innerThickness, "");
+		var leftArc = new Arc(2 * Math.PI * data.left.start / GENOME_END, 2 * Math.PI * data.left.end / GENOME_END, offsetList.innerOff, offsetList.innerOff + offsetList.innerThickness, "");
 		
 		if(!chromosomeArcs[data.left.chromosome].children.contains(leftArc)) //check for duplicates
 			chromosomeArcs[data.left.chromosome].children.push(leftArc);
 			
 		//define the right side
-		var rightArc = new Arc(2 * Math.PI * data.right.start / genomeEnd, 2 * Math.PI * data.right.end / genomeEnd, offsetList.innerOff, offsetList.innerOff + offsetList.innerThickness, "");
+		var rightArc = new Arc(2 * Math.PI * data.right.start / GENOME_END, 2 * Math.PI * data.right.end / GENOME_END, offsetList.innerOff, offsetList.innerOff + offsetList.innerThickness, "");
 		
 		if(!chromosomeArcs[data.right.chromosome].children.contains(rightArc)) //check for duplicates
 			chromosomeArcs[data.right.chromosome].children.push(rightArc);
 		
-		var curve = new Curve(2 * Math.PI * ((data.left.start + data.left.end) / 2) / genomeEnd, 2 * Math.PI * ((data.right.start + data.right.end) / 2) / genomeEnd, offsetList.curveRadius);
+		var curve = new Curve(2 * Math.PI * ((data.left.start + data.left.end) / 2) / GENOME_END, 2 * Math.PI * ((data.right.start + data.right.end) / 2) / GENOME_END, offsetList.curveRadius);
 		curves.push(curve);
 	}
 	
@@ -115,11 +115,11 @@ function buildPlot(lines, offsetList, w, h) {
 function getLineData(line) {
 	var data = line.split("\t");
 	
-	var leftStart = offsets[data[0]] + data[1];
-	var leftEnd = offsets[data[0]] + data[2];
+	var leftStart = CHR_OFFSETS[data[0]] + data[1];
+	var leftEnd = CHR_OFFSETS[data[0]] + data[2];
 
-	var rightStart = offsets[data[3]] + data[4];
-	var rightEnd = offsets[data[3]] + data[5];
+	var rightStart = CHR_OFFSETS[data[3]] + data[4];
+	var rightEnd = CHR_OFFSETS[data[3]] + data[5];
 
 	return {
 		left : { //the left side

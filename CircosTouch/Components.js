@@ -51,6 +51,7 @@
  * Not yet supported
  */
 function Arc(startAngle, endAngle, startDistance, endDistance, label){
+	//TODO: Implement seperate colors, if necessary, for each arc, instead of defined in renderingRules
 	this.children = new Array(); //Arcs OR Curves
 	
 	this.start = startAngle;
@@ -123,6 +124,7 @@ function Arc(startAngle, endAngle, startDistance, endDistance, label){
 	 * Clones the arc. Recommended if using in two different places.
 	 */
 	this.clone = function(){
+		//TODO: implement if necessary
 		throw "Not yet supported";
 	}
 }
@@ -146,6 +148,7 @@ function Arc(startAngle, endAngle, startDistance, endDistance, label){
  * @param renderingRules The rules by which the plot renders. See RenderingRules
  */
 function Curve(startAngle, endAngle, distance){
+	//TODO: Seperate colors, if neccesary, as referenced in Arc comments.
 	this.start = startAngle;
 	this.end = endAngle;
 	this.dist = distance;
@@ -186,8 +189,6 @@ function Curve(startAngle, endAngle, distance){
  * scale - The scale of the image
  * 
  * These properties default to (if not defined):
- * curveStroke - "#000000"
- * arcFill - "#0000FF"
  * font - "Verdana"
  * fontPt - 12
  * rotation - 0

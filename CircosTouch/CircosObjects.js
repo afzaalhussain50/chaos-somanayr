@@ -88,7 +88,7 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 		var matrix = new Array();
 		matrix.push(superArc.children);
 		var b = true;
-		while(b){
+		while(b){ //put all of the arcs into a matrix
 			b = false;
 			var ar = new Array();
 			for (var i=0; i < matrix[matrix.length - 1].length; i++) {
@@ -104,17 +104,19 @@ function SelfContainedCircosPlot(superArc, connections, w, h){
 		var dist = connections[0].dist;
 		for(var i = matrix.length - 1; i >= 0; i--){
 			var maxSize = 0;
+			//get the maxiumum size of text
 			for (var j=0; j < matrix[i].length; j++) {
 				maxSize = Math.max(maxSize, ctx.measureText(matrix[i][j].label).width);
 			}
+			//account for buffer space
 			maxSize += 20;
 			var start = dist;
 			dist += maxSize;
 			for (var j=0; j < matrix[i].length; j++) {
-				matrix[i][j].dist = start;
+				matrix[i][j].dist = start; //modify distances to ensure everything works properly
 			}
 		}
-		plot.render(ctx);
+		plot.render(ctx); //render the plot!
 	}
 	
 	this.rotate = function(theta){
@@ -362,6 +364,7 @@ function CircosPlot(superArc, connections, center, renderingRules){
 			y += yIncr;
 			c++;
 		}
+		/* prevent rendering from goinf offscreen */
 		if(x > w)
 			x = w;
 		if(x < 0)
@@ -370,7 +373,7 @@ function CircosPlot(superArc, connections, center, renderingRules){
 			y = h;
 		if(y < 0)
 			y = 0;
-		if(c >= 3){
+		if(c >= 3){ //3 or 4 quadrants -> center
 			x = w/2;
 			y = h/2;
 		}
@@ -378,6 +381,7 @@ function CircosPlot(superArc, connections, center, renderingRules){
 		var stack = new Array();
 		stack.push(arc);
 		var maxDepth = arc.dist;
+		
 		while(stack.length > 0){
 			var thisArc = stack.pop();
 			maxDepth = Math.min(maxDepth, thisArc.dist);
@@ -385,7 +389,7 @@ function CircosPlot(superArc, connections, center, renderingRules){
 				stack.push(thisArc.children[i]);
 			}
 		}
-		console.log(maxDepth);
+		
 		var scale = Math.min(w/2,h/2) / (arc.dist + arc.thickness + ((ctx) ? ctx.measureText(arc.label).width + 10 : 0));
 		var rules = new RenderingRules(renderingRules);
 		rules.scale = scale;
@@ -400,10 +404,10 @@ function CircosPlot(superArc, connections, center, renderingRules){
 	
 	this.createSubPlot = function(ctx, start, end, w, h){
 		if(typeof start != "Array"){
-			start = [start];
+			start = [start]; //convert to array
 		}
 		if(typeof end != "Array"){
-			end = [end];
+			end = [end]; //convert to array
 		}
 		createSubPlot(ctx, start, end, w, h);
 	}
@@ -510,12 +514,14 @@ function Plot(superArc, connections){
 		for (var i=0; i < startAngles.length; i++) {
 			sum += endAngles[i] - startAngles[i];
 		}
-		var scale = (2 * Math.PI - .1) / sum;
+		var scale = (2 * Math.PI - .1) / sum; //.1 is a small buffer zone so you don't have two seperate sections connected
 		var newSuperArc = subArc(superArc, startAngles, endAngles, scale);
 		
 		var stack = new Array();
-		stack.push(newSuperArc);
+		stack.push(newSuperArc); //you need a seed or the while loop below won't even start
 		var maxDepth = newSuperArc.dist;
+		
+		/* recursion sucks ;) */
 		while(stack.length > 0){
 			var thisArc = stack.pop();
 			maxDepth = Math.min(maxDepth, thisArc.dist);
