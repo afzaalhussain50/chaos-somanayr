@@ -6,27 +6,36 @@
 		<script type="text/javascript" src="GenomicBuild.js"></script>
 	</head>
 	<body>
-		<canvas id="circosPlot1" width=500 height=500>
-		</canvas>
-		<canvas id="circosPlot2" width=500 height=500>
-		</canvas>
-		<canvas id="circosPlot3" width=500 height=500>
-		</canvas>
+		<table>
+		<tr>
+		<td>circosPlot1</td>
+		<td><canvas id="circosPlot1" width=500 height=500 style="border:1px dotted;float:left"></canvas></td?
+		</tr>
+		<tr>
+		<td>circosPlot2</td>
+		<td><canvas id="circosPlot2" width=500 height=500 style="border:1px dotted;float:left"></canvas></td?
+		</tr>
+		<tr>
+		<td>circosPlot3</td>
+		<td><canvas id="circosPlot3" width=500 height=500 style="border:1px dotted;float:left"></canvas></td?
+		</tr>
+		</table>
 		<script type="text/javascript">
 			var snd = new Audio("dingding.wav");
 			snd.play();
 		</script>
 		<script type="text/javascript">
-		
+
 			var canvas = document.getElementById("circosPlot1");
 			var canvasContext = canvas.getContext("2d");
-			
+
 			var sccp;
-			
-			buildPlotFromFile("C:\Users\ramos\Documents\SVN\trunk\Circos\JavaScript\Experimental\edges.txt", {curveRadius:200, chrOff:240, chrThickness:40, innerOff:200, innerThickness:40}, 500, 500, function(plot){sccp = plot; sccp.render(canvasContext)});
-			
+
+			//buildPlotFromFile("C:\Users\ramos\Documents\SVN\trunk\Circos\JavaScript\Experimental\edges.txt", {curveRadius:200, chrOff:240, chrThickness:40, innerOff:200, innerThickness:40}, 500, 500, function(plot){sccp = plot; sccp.render(canvasContext)});
+			buildPlotFromFile("edges_excerpt.txt", {curveRadius:200, chrOff:240, chrThickness:40, innerOff:200, innerThickness:40}, 500, 500, function(plot){sccp = plot; sccp.render(canvasContext)});
+
 			var rot = 0;
-			
+
 			/*
 			 * Listeners
 			 */
@@ -38,14 +47,14 @@
 				p.createSubPlot(document.getElementById("circosPlot2").getContext("2d"), hit.start, hit.end, 500, 500);
 				cp.zoomInOnSection(document.getElementById("circosPlot3").getContext("2d"), hit.start, hit.end, 500, 500);
 			}
-			
+
 			canvas.onmouseup = function(evt){
 				canvasContext.fillStyle = "#FFFFFF";
 				canvasContext.fillRect(0,0,500,500);
 				sccp.rotate(.1);
 				sccp.render(canvasContext);
 			}
-			
+
 			function drawSubPlot(start, end){
 				var ctx2 = document.getElementById("circosPlot2").getContext("2d");
 				var canvasW = 500;
