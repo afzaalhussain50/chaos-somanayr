@@ -7,7 +7,7 @@
 		<script type="text/javascript" src="Components.js"></script>
 		<script type="text/javascript" src="CircosObjects.js"></script>
 		<script type="text/javascript" src="GenomicBuild.js"></script>
-		
+
 		<!--
 			This script is located on a remote server. It might be a good idea to move it to a local server.
 			I was nervous about copyright protection, so I'm just loading it from the github site. However,
@@ -16,42 +16,50 @@
 		<script src="https://github.com/sidelab/interact/raw/master/interact.js"></script>
 	</head>
 	<body>
-		<canvas id="circosPlot1" width=500 height=500>
-		</canvas>
-		<canvas id="circosPlot2" width=500 height=500>
-		</canvas>
-		<canvas id="circosPlot3" width=500 height=500>
-		</canvas>
+		<table>
+		<tr>
+		<td>circosPlot1</td>
+		<td><canvas id="circosPlot1" width=500 height=500 style="border:1px dotted;float:left"></canvas></td?
+		</tr>
+		<tr>
+		<td>circosPlot2</td>
+		<td><canvas id="circosPlot2" width=500 height=500 style="border:1px dotted;float:left"></canvas></td?
+		</tr>
+		<tr>
+		<td>circosPlot3</td>
+		<td><canvas id="circosPlot3" width=500 height=500 style="border:1px dotted;float:left"></canvas></td?
+		</tr>
+		</table>
 		<script type="text/javascript">
 			var snd = new Audio("dingding.wav"); //run sound for the lulz :D
 			snd.play();
 		</script>
 		<script type="text/javascript">
-		
-			var file = "http://chaos-somanayr.googlecode.com/svn/trunk/CircosTouch/edges.txt"; 	//FIXME: Be sure to change this if the file is moved
+
+			//var file = "http://chaos-somanayr.googlecode.com/svn/trunk/CircosTouch/edges.txt"; 	//FIXME: Be sure to change this if the file is moved
 																								//File must be on the same domain as the HTML file and script
-		
+			var file = "edges_excerpt.txt";
 			/*
 			 * Ideas for handlings lag due to large data sets:
 			 * a) Data simplification. Already implemented in CircosObjects SelfContainedCircosPlot
 			 * b) Save as image and modify image instead of re-rendering. Re-render on mouse up
-			 * c) ??? 
+			 * c) ???
 			 */
-		
+
 			console.log("version: .53");
-			
+
 			var canvas = document.getElementById("circosPlot1");
 			var canvasContext = canvas.getContext("2d");
-			
+
 			var realPlot; 	//the actual plot, not rendered
 			var sccp;		//the simplified plot
-			
+
 			buildPlotFromFile(file, {curveRadius:200, chrOff:240, chrThickness:40, innerOff:200, innerThickness:40}, 500, 500, function(plot){realplot = plot; sccp = plot.simplify(); sccp.render(canvasContext)});
-			
+
 			var ua = navigator.userAgent;
 			var isiPad = /iPad/i.test(ua) || /iPhone OS 3_1_2/i.test(ua) || /iPhone OS 3_2_2/i.test(ua);
 			if(isiPad){
-				/* 
+				/*
 				 * Touch listeners
 				 */
 				var eventMonitor = INTERACT.watch(canvas, {
@@ -95,31 +103,31 @@
 							p2Valid = true;
 						}
 						touchData = touchData.next;
-					} // while			
+					} // while
 					angle = sccp.renderingRules.rotation; //default angle
-						
+
 					if(p1Valid && p2Valid){ //two touch case
 						lastAngle = getAngle(p1, p2); //for reference
 						dist = distance(p1,p2) / sccp.renderingRules.scale;
 						pos = -1;
 					}
-					
+
 					if((!p1Valid || !p2Valid) && (p1Valid || p2Valid)){ //one touch case -- check for one valid and one not valid. There is no XOR in JavaScript, but this is essentially XOR
 						pos = touchData;
 					}
 				});
-	
-	
-				
+
+
+
 				/*
 				 * FIXME: I'm pretty sure all the math here is right. There is some bugginess with zooming and rotating that I haven't been able to find the source of.
 				 * It seems that if you pinch first, everything works OK. Panning first will bug on pinch/pan, rotating always involves some pinching or anti-pinching (is that a word???), anti-pinching first will cause the screen to go blank
 				 */
-				
+
 				// handle moves
 				eventMonitor.bind('pointerMoveMulti', function(evt, absXY, relXY) {
 					var touchData = relXY;
-	
+
 					while(touchData) { //reassign locations
 						if(touchData.id == p1.id) {
 							p1.x = touchData.x;
@@ -146,7 +154,7 @@
 						angle += (thisAngle - lastAngle);
 						angle %= Math.PI * 2;
 						lastAngle = thisAngle;
-						
+
 						var thisDist = distance(p1, p2);//distance between the fingers
 						var scale = thisDist / dist;
 						sccp.renderingRules.scale = scale;
@@ -158,7 +166,7 @@
 						canvasContext.restore();
 					}
 				});
-				
+
 				// handle pointer up events
 				eventMonitor.bind('pointerUpMulti', function(evt, absXY, relXY, deltaXY) {
 					//free pointers so that they can be used for other touches
@@ -172,14 +180,14 @@
 					}
 					pos = -1;
 				});
-				
+
 				function distance(p1, p2){
 					return Math.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
 				}
 			} else {
 				var lastAngle = undefined;
 				var lastPos;
-				
+
 				/*
 				 * Mouse listeners
 				 */
@@ -195,7 +203,7 @@
 					p.createSubPlot(document.getElementById("circosPlot2").getContext("2d"), hit.start, hit.end, 500, 500);
 					cp.zoomInOnSection(document.getElementById("circosPlot3").getContext("2d"), hit.start, hit.end, 500, 500);
 				}
-				
+
 				canvas.onmousemove = function(evt){
 					if(!lastPos)
 						return;
@@ -210,32 +218,32 @@
 						sccp.translate(lastPos.x - x, lastPos.y - y);
 						lastPos = {x:x, y:y};
 					}
-					
+
 					canvasContext.fillStyle = "#FFFFFF";
 					canvasContext.fillRect(0,0,500,500);
 					sccp.render(canvasContext);
 				}
-				
+
 				canvas.onmouseup = function(evt){
 					lastAngle = undefined;
 					lastPos = undefined;
 				}
-				
+
 				function mouseScroll(evt){
 					wheelDelta = evt.detail ? evt.detail : evt.wheelData;
 				}
-				
+
 				/* From http://www.javascriptkit.com/javatutors/onmousewheel.shtml */
-	
+
 				var mousewheelevt=(/Firefox/i.test(navigator.userAgent))? "DOMMouseScroll" : "mousewheel" //FF doesn't recognize mousewheel as of FF3.x
-	 
+
 				if (canvas.attachEvent) //if IE (and Opera depending on user setting)
 				    canvas.attachEvent("on"+mousewheelevt, mouseScroll)
 				else if (canvas.addEventListener) //WC3 browsers
 				    canvas.addEventListener(mousewheelevt, mouseScroll, false)
-				
+
 			}
-				
+
 			function getAngle(center, location){ // returns the angle in a circle relative to the center and the point. Radius is irrelevant
 				var x = location.x - center.x;
 				var y = location.y - center.y;
