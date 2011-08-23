@@ -1,4 +1,6 @@
 
+//Haha: realized later this is a just a bucket sort! Still leaving it up, though.
+
 public class NLogNBreak {
 	public static class LinkedListBack {
 		public LinkedListBack(int val){
