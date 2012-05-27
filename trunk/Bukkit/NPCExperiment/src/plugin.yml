@@ -1,0 +1,23 @@
+name: NPCExperiment
+version: 0.0.0
+description: Experiment
+author: FalseVacuum
+authors: [FalseVacuum] 
+website: 
+
+main: vacuum.npcs.Plugin
+database: false
+depend: []
+
+commands:
+  spawnnpc:
+    description: Spawn npc
+    permission: vacuum.spawnnpc
+    usage: |
+      /<command>
+      Example: /<command> - Spawn NPC
+  
+permissions:
+  vacuum.spawnnpc:
+    description: Access ChangeDamage commands
+    default: op
