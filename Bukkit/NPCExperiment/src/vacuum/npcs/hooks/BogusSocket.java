@@ -1,6 +1,7 @@
 package vacuum.npcs.hooks;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -8,6 +9,8 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import net.minecraft.server.Packet;
 
 public class BogusSocket extends Socket {
 
@@ -69,6 +72,16 @@ public class BogusSocket extends Socket {
 	@Override
 	public SocketAddress getRemoteSocketAddress() {
 		return null;
+	}
+	
+	public void queuePacket(Packet p){
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {
+			Packet.a(p, new DataOutputStream(out));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		this.queuePacket(out.toByteArray());
 	}
 	
 	public void queuePacket(int[] packet){

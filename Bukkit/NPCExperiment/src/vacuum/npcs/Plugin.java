@@ -12,9 +12,11 @@ import vacuum.npcs.hooks.EntityNPC;
 public class Plugin extends JavaPlugin {
 	
 	public static File pluginDataFolder;
+	public static Plugin plugin;
 
 	@Override
 	public void onEnable(){
+		plugin = this;
 		this.pluginDataFolder = getDataFolder();
 	}
 
